@@ -23,8 +23,6 @@ public class MainFrame extends JFrame {
 
     private final ConditionController conditionController = new ConditionController(conditionForm, detailsPanel);
 
-    private
-
     private static final int FRAME_WIDTH = 600;
 
     private static final int FRAME_HEIGHT = 400;
