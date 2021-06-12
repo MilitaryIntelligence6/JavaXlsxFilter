@@ -1,15 +1,19 @@
 package cn.misection.xfilter.ui.view;
 
 import cn.misection.xfilter.common.constant.StringPool;
+import cn.misection.xfilter.ui.util.SkinManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 
 /**
  * @author Administrator
  */
-public class ConditionForm extends JPanel {
+public class ControlPanel extends JPanel {
 
     private final JLabel conditionLabel = new JLabel("输入筛选条件: ");
 
@@ -19,7 +23,7 @@ public class ConditionForm extends JPanel {
 
     private final JButton viewButton = new JButton("View All Users");
 
-    public ConditionForm() {
+    public ControlPanel() {
         init();
     }
 
@@ -80,7 +84,7 @@ public class ConditionForm extends JPanel {
     }
 
     public String condition() {
-        return conditionField.getText().trim();
+        return String.valueOf(conditionField.getText()).trim();
     }
 
     public void submitUsers(ActionListener actionListener) {

@@ -12,15 +12,29 @@ import javax.swing.*;
  * @Description TODO
  * @CreateTime 2021年06月12日 00:13:00
  */
-public class SkinProxy {
+public class SkinManager {
 
-    private SkinProxy() {
+    private static SkinStatus status = SkinStatus.INTELLIJ;
+
+    private static boolean beenDark = false;
+
+    private SkinManager() {
         throw new RuntimeException("here are no skinProxy instance for you");
+    }
+
+    public static void changeSkin() {
+        if (beenDark) {
+            setIntellijSkin();
+        } else {
+            setDarculaSkin();
+        }
     }
 
     public static void setDarculaSkin() {
         try {
             UIManager.setLookAndFeel(new FlatDarculaLaf());
+            status = SkinStatus.DARCULA;
+            beenDark = true;
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
@@ -29,8 +43,19 @@ public class SkinProxy {
     public static void setIntellijSkin() {
         try {
             UIManager.setLookAndFeel(new FlatIntelliJLaf());
+            status = SkinStatus.INTELLIJ;
+            beenDark = false;
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
     }
+}
+
+enum SkinStatus {
+    /**
+     * 皮肤状态;
+     */
+    INTELLIJ,
+
+    DARCULA,
 }

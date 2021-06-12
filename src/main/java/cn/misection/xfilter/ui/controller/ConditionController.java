@@ -1,16 +1,11 @@
 package cn.misection.xfilter.ui.controller;
 
-import cn.misection.xfilter.common.util.NullSafe;
-import cn.misection.xfilter.ui.config.ResourceBundle;
 import cn.misection.xfilter.ui.entity.ConditionEntity;
-import cn.misection.xfilter.ui.view.ConditionForm;
+import cn.misection.xfilter.ui.view.ControlPanel;
 import cn.misection.xfilter.ui.view.DetailsPanel;
-import cn.misection.xfilter.ui.dao.Database;
+import cn.misection.xfilter.ui.dao.DataSource;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 
 /**
  * @author Administrator
@@ -19,16 +14,20 @@ public class ConditionController {
     /**
      * database file
      */
-    private static final File dbFile = requireDbFile();
-    private Database database;
-    private ConditionForm conditionForm;
-    private DetailsPanel detailsPanel;
+    private final DataSource dataSource = DataSource.getInstance();
 
-    public ConditionController(ConditionForm conditionForm, DetailsPanel detailsPanel) {
-        this.database = new Database();
+    private final ControlPanel conditionForm;
+
+    private final DetailsPanel detailsPanel;
+
+    public ConditionController(ControlPanel conditionForm, DetailsPanel detailsPanel) {
         this.conditionForm = conditionForm;
         this.detailsPanel = detailsPanel;
+        init();
+    }
 
+    private void init() {
+        this.detailsPanel.loadData(this.dataSource.loadOut());
         // submit user
         this.conditionForm.submitUsers(e -> {
             String condition = this.conditionForm.condition();
@@ -38,31 +37,11 @@ public class ConditionController {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            this.database.addCondition(new ConditionEntity(condition));
-            this.database.saveCondition(dbFile);
+            // update data;
+            this.dataSource.addAndSave(new ConditionEntity(condition));
+            // updateUI;
             this.conditionForm.reset();
+            this.detailsPanel.addTail(condition);
         });
-
-        // load users
-        this.conditionForm.viewUsers(e -> {
-            this.detailsPanel.getUsers(this.database.loadUsers(dbFile));
-        });
-    }
-
-    private static File requireDbFile() {
-        URL resource = ConditionController.class.getResource(ResourceBundle.CONDITION_DB.getPath());
-        if (resource != null) {
-            String path = resource.getPath();
-            File file = new File(path);
-            if (!file.exists()) {
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return file;
-        }
-        return new File(ResourceBundle.CONDITION_DB.getPath());
     }
 }
