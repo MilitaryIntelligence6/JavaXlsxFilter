@@ -7,42 +7,59 @@ import cn.misection.xfilter.ui.util.CenterUtil;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * @author Administrator
+ */
 public class MainFrame extends JFrame {
 
     /**
      * Card layout for switching view;
      */
-    private CardLayout cardLayout;
+    private final CardLayout cardLayout = new CardLayout();
+
+    private final ConditionForm conditionForm = new ConditionForm();
+
+    private final DetailsPanel detailsPanel = new DetailsPanel();
+
+    private final ConditionController conditionController = new ConditionController(conditionForm, detailsPanel);
 
     private static final int FRAME_WIDTH = 600;
+
     private static final int FRAME_HEIGHT = 400;
 
     public MainFrame() {
-        super("Java Swing MVC");
-        cardLayout = new CardLayout();
-        ConditionForm conditionForm = new ConditionForm();
-        UserDetailsPanel userDetailsPanel = new UserDetailsPanel();
+        super("Java Xlsx 筛选器 军情六处工作室出品");
+        init();
+    }
+
+    private void init() {
+        initBaseUI();
+        initSubViewAndRegisterListener();
+        initBounds();
+        this.setVisible(true);
+    }
+
+    private void initBaseUI() {
         // sets our layout as a card layout
-        setLayout(cardLayout);
-
+        this.setLayout(cardLayout);
         // initialize user controller
-        new ConditionController(conditionForm, userDetailsPanel);
+        // icon for our application
+        this.setIconImage(new ImageIcon("src/assets/appicon.png").getImage());
+        // size of our application frame
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
 
+    private void initSubViewAndRegisterListener() {
         // adds view to card layout with unique constraints
-        add(conditionForm, "form");
-        add(userDetailsPanel, "user details");
+        this.add(conditionForm, "form");
+        this.add(detailsPanel, "user details");
         // switch view according to its constraints on click
         conditionForm.viewUsers(e -> cardLayout.show(MainFrame.this.getContentPane(), "user details"));
-        userDetailsPanel.backButton(e -> cardLayout.show(MainFrame.this.getContentPane(), "form"));
+        detailsPanel.backButton(e -> cardLayout.show(MainFrame.this.getContentPane(), "form"));
+    }
 
-        // icon for our application
-        ImageIcon imageIcon = new ImageIcon("src/assets/appicon.png");
-        setIconImage(imageIcon.getImage());
-
-        // size of our application frame
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    private void initBounds() {
+        this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         CenterUtil.keepCenter(this);
-        setVisible(true);
     }
 }

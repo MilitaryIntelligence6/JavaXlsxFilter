@@ -78,8 +78,8 @@ public class ConditionForm extends JPanel {
         conditionField.setText(StringPool.EMPTY.value());
     }
 
-    public String getFirstname() {
-        return conditionField.getText();
+    public String condition() {
+        return conditionField.getText().trim();
     }
 
     public void submitUsers(ActionListener actionListener) {

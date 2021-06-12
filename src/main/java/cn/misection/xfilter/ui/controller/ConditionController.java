@@ -4,14 +4,13 @@ import cn.misection.xfilter.common.util.NullSafe;
 import cn.misection.xfilter.ui.config.ResourceBundle;
 import cn.misection.xfilter.ui.entity.ConditionEntity;
 import cn.misection.xfilter.ui.view.ConditionForm;
-import cn.misection.xfilter.ui.view.UserDetailsPanel;
+import cn.misection.xfilter.ui.view.DetailsPanel;
 import cn.misection.xfilter.ui.dao.Database;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 
 /**
  * @author Administrator
@@ -23,19 +22,19 @@ public class ConditionController {
     private static final File dbFile = requireDbFile();
     private Database database;
     private ConditionForm conditionForm;
-    private UserDetailsPanel userDetailsPanel;
+    private DetailsPanel detailsPanel;
 
-    public ConditionController(ConditionForm conditionForm, UserDetailsPanel userDetailsPanel) {
+    public ConditionController(ConditionForm conditionForm, DetailsPanel detailsPanel) {
         this.database = new Database();
         this.conditionForm = conditionForm;
-        this.userDetailsPanel = userDetailsPanel;
+        this.detailsPanel = detailsPanel;
 
         // submit user
         this.conditionForm.submitUsers(e -> {
-            String condition = NullSafe.safeString(this.conditionForm.getFirstname().trim());
+            String condition = this.conditionForm.condition();
             // simple validations
             if(condition.isEmpty()) {
-                JOptionPane.showMessageDialog(this.conditionForm, "First Name Required.", "Error",
+                JOptionPane.showMessageDialog(this.conditionForm, "条件不能为空!", "Error",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -46,7 +45,7 @@ public class ConditionController {
 
         // load users
         this.conditionForm.viewUsers(e -> {
-            this.userDetailsPanel.getUsers(this.database.loadUsers(dbFile));
+            this.detailsPanel.getUsers(this.database.loadUsers(dbFile));
         });
     }
 
