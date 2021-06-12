@@ -19,6 +19,10 @@ public class CenterUtil {
 
     public static final int SCREEN_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
 
+    private CenterUtil() {
+        throw new RuntimeException("here is no CenterUtil instance for you");
+    }
+
     public static void keepCenter(JFrame frame) {
         frame.setLocation(
                 (SCREEN_WIDTH - frame.getWidth()) / 2,

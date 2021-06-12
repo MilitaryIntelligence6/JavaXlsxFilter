@@ -1,7 +1,7 @@
 package cn.misection.xfilter.ui.view;
 
 
-import cn.misection.xfilter.ui.controller.UserController;
+import cn.misection.xfilter.ui.controller.ConditionController;
 import cn.misection.xfilter.ui.util.CenterUtil;
 
 import javax.swing.*;
@@ -26,7 +26,7 @@ public class MainFrame extends JFrame {
         setLayout(cardLayout);
 
         // initialize user controller
-        new UserController(conditionForm, userDetailsPanel);
+        new ConditionController(conditionForm, userDetailsPanel);
 
         // adds view to card layout with unique constraints
         add(conditionForm, "form");

@@ -1,24 +1,29 @@
-package cn.misection.xfilter.ui.entity;
+package cn.misection.xfilter.ui.dao;
+
+import cn.misection.xfilter.ui.entity.ConditionEntity;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Administrator
+ */
 public class Database {
 
-    private List<User> userList;
+    private final List<ConditionEntity> conditionEntityList;
 
     public Database() {
-        userList = new ArrayList<>();
+        conditionEntityList = new ArrayList<>();
     }
 
     /**
      * adds user to our collection;
      *
-     * @param user
+     * @param conditionEntity
      */
-    public void addUser(User user) {
-        userList.add(user);
+    public void addCondition(ConditionEntity conditionEntity) {
+        conditionEntityList.add(conditionEntity);
     }
 
     /**
@@ -26,20 +31,20 @@ public class Database {
      *
      * @param file
      */
-    public void saveUser(File file) {
+    public void saveCondition(File file) {
         try {
             // user model
-            User user;
-            String save_data = "";
+            ConditionEntity conditionEntity;
+            String saveData = "";
 
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file, true));
             int i = 0;
-            while (i < userList.size()) {
-                user = userList.get(i);
-                save_data = user.getFirstname() + ", " + user.getLastname();
+            while (i < conditionEntityList.size()) {
+                conditionEntity = conditionEntityList.get(i);
+                saveData = conditionEntity.value();
                 i++;
             }
-            bufferedWriter.write(save_data);
+            bufferedWriter.write(saveData);
             bufferedWriter.newLine();
             // prevents memory leak
             bufferedWriter.close();

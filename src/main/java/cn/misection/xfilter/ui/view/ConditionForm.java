@@ -1,30 +1,30 @@
 package cn.misection.xfilter.ui.view;
 
+import cn.misection.xfilter.common.constant.StringPool;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class ConditionForm extends JPanel {
 
-    private final JTextField firstnameField;
-    private final JTextField lastNameField;
+    private final JTextField conditionField;
 
-    private final JButton addButton;
+    private final JButton addConditionButton;
     private final JButton viewButton;
 
     public ConditionForm() {
 
-        JLabel firstnameLabel = new JLabel("First Name: ");
-        JLabel lastnameLabel = new JLabel("Last Name: ");
+        JLabel conditionLabel = new JLabel("输入筛选条件: ");
+//        JLabel lastnameLabel = new JLabel("Last Name: ");
 
-        firstnameField = new JTextField(25);
-        lastNameField = new JTextField(25);
+        conditionField = new JTextField(25);
+//        lastNameField = new JTextField(25);
 
-        addButton = new JButton("Add User");
-        addButton.setPreferredSize(new Dimension(278, 40));
+        addConditionButton = new JButton("增加筛选过滤条件");
+        addConditionButton.setPreferredSize(new Dimension(278, 40));
         viewButton = new JButton("View All Users");
         viewButton.setPreferredSize(new Dimension(278, 40));
-
         // space between fields
         Insets fieldsInset = new Insets(0, 0, 10, 0);
         // space between buttons
@@ -40,29 +40,29 @@ public class ConditionForm extends JPanel {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = GridBagConstraints.WEST;
 
-        add(firstnameLabel, gridBagConstraints);
+        add(conditionLabel, gridBagConstraints);
 
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
 
-        add(firstnameField, gridBagConstraints);
+        add(conditionField, gridBagConstraints);
 
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = GridBagConstraints.WEST;
 
-        add(lastnameLabel, gridBagConstraints);
+//        add(lastnameLabel, gridBagConstraints);
 
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
 
-        add(lastNameField, gridBagConstraints);
+//        add(lastNameField, gridBagConstraints);
 
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.insets = buttonInset;
 
-        add(addButton, gridBagConstraints);
+        add(addConditionButton, gridBagConstraints);
 
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
@@ -73,26 +73,17 @@ public class ConditionForm extends JPanel {
 
     /**
      * reset fields;
-     *
-     * @param reset
      */
-    public void reset(boolean reset) {
-        if (reset) {
-            firstnameField.setText("");
-            lastNameField.setText("");
-        }
+    public void reset() {
+        conditionField.setText(StringPool.EMPTY.value());
     }
 
     public String getFirstname() {
-        return firstnameField.getText();
-    }
-
-    public String getLastname() {
-        return lastNameField.getText();
+        return conditionField.getText();
     }
 
     public void submitUsers(ActionListener actionListener) {
-        addButton.addActionListener(actionListener);
+        addConditionButton.addActionListener(actionListener);
     }
 
     public void viewUsers(ActionListener actionListener) {

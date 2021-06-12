@@ -1,6 +1,8 @@
-package cn.misection.xfilter.core.util;
+package cn.misection.xfilter.common.util;
 
-import cn.misection.xfilter.core.constant.StringPool;
+import cn.misection.xfilter.common.constant.StringPool;
+
+import java.net.URL;
 
 /**
  * @author Military Intelligence 6 root
@@ -15,7 +17,7 @@ public class NullSafe {
         throw new RuntimeException("here are no NullSafe instance for you");
     }
 
-    public static String requireSafeString(String string) {
+    public static String safeString(String string) {
         return string == null
                 ? StringPool.EMPTY.value()
                 : string.trim();

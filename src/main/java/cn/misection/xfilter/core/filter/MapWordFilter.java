@@ -1,7 +1,7 @@
 package cn.misection.xfilter.core.filter;
 
-import cn.misection.xfilter.core.constant.StringPool;
-import cn.misection.xfilter.core.util.NullSafe;
+import cn.misection.xfilter.common.util.NullSafe;
+import cn.misection.xfilter.core.constant.CoreString;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +49,7 @@ public class MapWordFilter implements Filterable {
 
     private void sumPreLine(List<String> line) {
         Map<String, Double> filterWordMap = new HashMap<String, Double>(filterWordList.size()) {{
-            put(StringPool.TOTAL_SUM_KEY.value(), Double.valueOf(0));
+            put(CoreString.TOTAL_SUM_KEY.value(), Double.valueOf(0));
         }};
         for (String filterWord : filterWordList) {
             filterWordMap.put(filterWord, Double.valueOf(0));
@@ -57,10 +57,10 @@ public class MapWordFilter implements Filterable {
         Double totalSum = Double.valueOf(0);
         for (int i = preLineStartIndex; i < line.size(); i++) {
             double value = Double.parseDouble(line.get(i + 1));
-            filterWordMap.put(StringPool.TOTAL_SUM_KEY.value(),
-                    filterWordMap.get(StringPool.TOTAL_SUM_KEY.value()) + value);
+            filterWordMap.put(CoreString.TOTAL_SUM_KEY.value(),
+                    filterWordMap.get(CoreString.TOTAL_SUM_KEY.value()) + value);
             String curColumnName = line.get(i);
-            curColumnName = NullSafe.requireSafeString(curColumnName).trim();
+            curColumnName = NullSafe.safeString(curColumnName).trim();
             if (filterWordMap.containsKey(curColumnName)
                     // 防止越界;
                     && i != line.size() - 1) {

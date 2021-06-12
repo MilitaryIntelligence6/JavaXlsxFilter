@@ -14,6 +14,10 @@ import javax.swing.*;
  */
 public class SkinProxy {
 
+    private SkinProxy() {
+        throw new RuntimeException("here are no skinProxy instance for you");
+    }
+
     public static void setDarculaSkin() {
         try {
             UIManager.setLookAndFeel(new FlatDarculaLaf());

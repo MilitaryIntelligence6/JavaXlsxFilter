@@ -11,12 +11,15 @@ public interface ConditionDao {
 
     /**
      * 添加条件;
+     * @param condition
+     * @return
      */
-    void add();
+    boolean add(String condition);
 
     /**
-     * 移除条件 by key;
-     * @param key
+     * 移除条件;
+     * @param condition
+     * @return
      */
-    void remove(String key);
+    boolean remove(String condition);
 }
