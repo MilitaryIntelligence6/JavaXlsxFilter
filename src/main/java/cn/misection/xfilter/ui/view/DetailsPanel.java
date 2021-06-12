@@ -7,12 +7,19 @@ import java.awt.event.ActionListener;
 
 public class DetailsPanel extends JPanel {
 
-    // Table for user data
+    /**
+     * Table for user data;
+     */
     private JTable userTable;
-    // table column
-    private String[] userTableColumn = {"FIRST NAME", "LAST NAME"};
 
-    // back button
+    /**
+     * table column;
+     */
+    private String[] userTableColumn = {"已有筛选条件"};
+
+    /**
+     * back button;
+     */
     private JButton backButton;
 
     public DetailsPanel() {
@@ -32,7 +39,10 @@ public class DetailsPanel extends JPanel {
 
     }
 
-    // gets users from database and loads to table
+    /**
+     * gets users from database and loads to table
+     * @param objects
+     */
     public void getUsers(Object[] objects) {
         DefaultTableModel defaultTableModel = (DefaultTableModel) userTable.getModel();
         defaultTableModel.setColumnIdentifiers(userTableColumn);
@@ -45,7 +55,10 @@ public class DetailsPanel extends JPanel {
         }
     }
 
-    // event listener for back button
+    /**
+     * event listener for back button;
+     * @param actionListener
+     */
     public void backButton(ActionListener actionListener) {
         backButton.addActionListener(actionListener);
     }

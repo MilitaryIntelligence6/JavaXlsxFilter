@@ -23,6 +23,8 @@ public class MainFrame extends JFrame {
 
     private final ConditionController conditionController = new ConditionController(conditionForm, detailsPanel);
 
+    private
+
     private static final int FRAME_WIDTH = 600;
 
     private static final int FRAME_HEIGHT = 400;
@@ -34,14 +36,14 @@ public class MainFrame extends JFrame {
 
     private void init() {
         initBaseUI();
-        initSubViewAndRegisterListener();
+        initSubViewAndLayout();
         initBounds();
         this.setVisible(true);
     }
 
     private void initBaseUI() {
         // sets our layout as a card layout
-        this.setLayout(cardLayout);
+        this.setLayout(new BorderLayout());
         // initialize user controller
         // icon for our application
         this.setIconImage(new ImageIcon("src/assets/appicon.png").getImage());
@@ -49,13 +51,13 @@ public class MainFrame extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    private void initSubViewAndRegisterListener() {
+    private void initSubViewAndLayout() {
         // adds view to card layout with unique constraints
-        this.add(conditionForm, "form");
-        this.add(detailsPanel, "user details");
+        this.add(conditionForm, BorderLayout.WEST);
+        this.add(detailsPanel, BorderLayout.CENTER);
         // switch view according to its constraints on click
-        conditionForm.viewUsers(e -> cardLayout.show(MainFrame.this.getContentPane(), "user details"));
-        detailsPanel.backButton(e -> cardLayout.show(MainFrame.this.getContentPane(), "form"));
+//        conditionForm.viewUsers(e -> cardLayout.show(MainFrame.this.getContentPane(), "user details"));
+//        detailsPanel.backButton(e -> cardLayout.show(MainFrame.this.getContentPane(), "form"));
     }
 
     private void initBounds() {
