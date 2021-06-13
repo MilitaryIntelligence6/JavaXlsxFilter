@@ -24,6 +24,8 @@ public class ConditionDaoImpl implements ConditionDao {
      */
     private final List<ConditionEntity> valueList = new LinkedList<>();
 
+    private final Object[] rawData = loadOutFromDb();
+
     private ConditionDaoImpl() {
         init();
     }
@@ -53,33 +55,29 @@ public class ConditionDaoImpl implements ConditionDao {
     /**
      * adds user to our collection;
      *
-     * @param conditionEntity
+     * @param condition
      */
     @Override
-    public boolean addSave(ConditionEntity conditionEntity) {
-        valueList.add(conditionEntity);
-        return saveLast();
+    public boolean saveAddChange(ConditionEntity condition) {
+        valueList.add(condition);
+        return saveCondition(condition);
     }
 
     @Override
-    public boolean removeSave(int index) {
+    public boolean saveRemoveChange(int index) {
         valueList.remove(index);
-        return reSave();
+        return reSave(this.valueList);
     }
 
     @Override
-    public boolean clearSave() {
-        clearInstance();
+    public boolean saveClearChange() {
+        valueList.clear();
         return clearDb();
     }
 
     @Override
     public List<ConditionEntity> value() {
         return valueList;
-    }
-
-    private void clearInstance() {
-        valueList.clear();
     }
 
     private boolean clearDb() {
@@ -113,12 +111,10 @@ public class ConditionDaoImpl implements ConditionDao {
     /**
      * saves user to database file;
      */
-    private boolean saveLast() {
+    private boolean saveCondition(ConditionEntity condition) {
         try {
-            // user model
-            ConditionEntity lastEntity = valueList.get(valueList.size() - 1);
             BufferedWriter saveWriter = new BufferedWriter(new FileWriter(dbFile, true));
-            saveWriter.write(lastEntity.value());
+            saveWriter.write(condition.value());
             saveWriter.newLine();
             saveWriter.close();
             return true;
@@ -128,9 +124,8 @@ public class ConditionDaoImpl implements ConditionDao {
         return false;
     }
 
-    private boolean reSave() {
+    private boolean reSave(List<ConditionEntity> valueList) {
         try {
-            ConditionEntity lastEntity = valueList.get(valueList.size() - 1);
             BufferedWriter reSaveWriter = new BufferedWriter(new FileWriter(dbFile, false));
             for (ConditionEntity condition : valueList) {
                 reSaveWriter.write(condition.value());
@@ -159,5 +154,9 @@ public class ConditionDaoImpl implements ConditionDao {
             return file;
         }
         return new File(ResourceBundle.CONDITION_DB.getPath());
+    }
+
+    public Object[] getRawData() {
+        return rawData;
     }
 }

@@ -18,20 +18,20 @@ public interface ConditionDao {
      * @param condition
      * @return
      */
-    boolean addSave(ConditionEntity condition);
+    boolean saveAddChange(ConditionEntity condition);
 
     /**
      * 移除条件;
-     * @param condition
+     * @param index
      * @return
      */
-    boolean removeSave(int index);
+    boolean saveRemoveChange(int index);
 
     /**
      * 清除所有;
      * @return
      */
-    boolean clearSave();
+    boolean saveClearChange();
 
     /**
      * 获取value;

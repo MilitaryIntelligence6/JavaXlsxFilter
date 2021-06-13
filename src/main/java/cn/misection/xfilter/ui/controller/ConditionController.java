@@ -3,6 +3,7 @@ package cn.misection.xfilter.ui.controller;
 import cn.misection.xfilter.common.util.NullSafe;
 import cn.misection.xfilter.ui.bridge.CoreApiProxy;
 import cn.misection.xfilter.ui.constant.ChooseFileType;
+import cn.misection.xfilter.ui.constant.StringPool;
 import cn.misection.xfilter.ui.dao.ConditionDao;
 import cn.misection.xfilter.ui.dao.impl.ConditionDaoImpl;
 import cn.misection.xfilter.ui.entity.ConditionEntity;
@@ -91,7 +92,7 @@ public class ConditionController {
                 return;
             }
             // update data;
-            conditionDao.addSave(new ConditionEntity(condition));
+            conditionDao.saveAddChange(new ConditionEntity(condition));
             // updateUI;
             controlPanel.reset();
             conditionViewPanel.addTail(condition);
@@ -104,7 +105,7 @@ public class ConditionController {
                     int selectedRow = conditionViewPanel.getDataTable().getSelectedRow();
                     if (selectedRow != -1) {
                         conditionViewPanel.delSelected(selectedRow);
-                        conditionDao.removeSave(selectedRow);
+                        conditionDao.saveRemoveChange(selectedRow);
                     }
                 }
         );
@@ -113,7 +114,7 @@ public class ConditionController {
     private void registerDelAllListener() {
         conditionViewPanel.getDelAllButton().addActionListener(
                 e -> {
-                    conditionDao.clearSave();
+                    conditionDao.saveClearChange();
                     conditionViewPanel.clearUI();
                 }
         );
@@ -133,7 +134,8 @@ public class ConditionController {
                         );
                         return;
                     }
-                    if (!(inPath.endsWith(".xlsx") || inPath.endsWith(".xls"))) {
+                    if (!(inPath.endsWith(StringPool.SUFFIX_XLSX.value())
+                            || inPath.endsWith(StringPool.SUFFIX_XLS.value()))) {
                         JOptionPane.showMessageDialog(
                                 null,
                                 "输入文件必须以.xlsx或者.xls结尾(虽然实际上没啥用)",
