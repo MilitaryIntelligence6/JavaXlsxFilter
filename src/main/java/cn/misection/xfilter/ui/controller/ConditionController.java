@@ -24,7 +24,7 @@ public class ConditionController {
      */
     private final ConditionDao conditionDao = ConditionDaoImpl.getInstance();
 
-    private final ConditionService service = new ConditionServiceImpl();
+    private final ConditionService service = ConditionServiceImpl.getInstance();
 
     private final ControlPanel controlPanel;
 
