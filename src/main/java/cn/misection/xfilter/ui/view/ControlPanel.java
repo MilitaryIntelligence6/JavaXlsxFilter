@@ -17,6 +17,14 @@ public class ControlPanel extends JPanel {
 
     private static final Dimension uniteTextFieldDimension = new Dimension(200, 30);
 
+    private final JLabel conditionLabel = new JLabel("输入筛选过滤条件: ");
+
+    private final JPanel conditionInputPanel = new JPanel();
+
+    private final JTextField conditionField = new JTextField();
+
+    private final JButton addConditionButton = new JButton("添加条件");
+
     private final JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
 
     private final JButton exitButton = new JButton("退出系统");
@@ -53,36 +61,31 @@ public class ControlPanel extends JPanel {
 
     private final JButton runButton = new JButton("go!");
 
-    private final JLabel conditionLabel = new JLabel("输入筛选过滤条件: ");
-
-    private final JPanel conditionInputPanel = new JPanel();
-
-    private final JTextField conditionField = new JTextField();
-
-    private final JButton addConditionButton = new JButton("添加条件");
-
     public ControlPanel() {
         init();
     }
 
     private void init() {
-        initLayout();
+        this.setLayout(new GridLayout(8, 1, 5, 5));
         initToolBar();
-        initFileChooseGroup();
         initAddFilterButtonGroup();
+        initFileChooseGroup();
     }
 
-
-    private void initLayout() {
-        this.setLayout(new GridLayout(8, 1, 5, 5));
+    private void initAddFilterButtonGroup() {
+        this.add(conditionLabel);
+        this.add(conditionInputPanel);
+        conditionField.setPreferredSize(uniteTextFieldDimension);
+        conditionInputPanel.add(conditionField);
+        conditionInputPanel.add(addConditionButton);
     }
 
     private void initFileChooseGroup() {
-        this.add(toolBar);
         this.add(inFileChoosePrompt);
         this.add(inPathFieldPanel);
         this.add(outFileChoosePrompt);
         this.add(outPathFieldPanel);
+        this.add(runButton);
 
         inFilePathField.setPreferredSize(uniteTextFieldDimension);
         inPathFieldPanel.add(inFilePathField);
@@ -94,15 +97,6 @@ public class ControlPanel extends JPanel {
 
     }
 
-    private void initAddFilterButtonGroup() {
-        this.add(runButton);
-        this.add(conditionLabel);
-        this.add(conditionInputPanel);
-        conditionField.setPreferredSize(uniteTextFieldDimension);
-        conditionInputPanel.add(conditionField);
-        conditionInputPanel.add(addConditionButton);
-    }
-
     private void initToolBar() {
         toolBar.setLayout(new GridLayout(1, 2, 20, 20));
         toolBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, toolBar.getMinimumSize().height));
@@ -111,6 +105,7 @@ public class ControlPanel extends JPanel {
         switchDarkButton.setPreferredSize(new Dimension(50, 20));
         toolBar.add(exitButton);
         toolBar.add(darkButtonPanel);
+        this.add(toolBar);
     }
 
     /**

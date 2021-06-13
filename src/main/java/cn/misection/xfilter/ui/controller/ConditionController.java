@@ -74,7 +74,7 @@ public class ConditionController {
                 e -> {
                     int choice = JOptionPane.showConfirmDialog(
                             null,
-                            "您确定退出系统吗?",
+                            "你舍得退出系统吗?",
                             "退出系统",
                             JOptionPane.YES_NO_OPTION);
                     switch (choice) {
@@ -137,7 +137,7 @@ public class ConditionController {
                         );
                         return;
                     }
-                    if (outFile.exists()) {
+                    if (outFile.exists() && outFile.isFile()) {
                         int override = JOptionPane.showConfirmDialog(
                                 null,
                                 "输出文件已存在, 确认覆盖?",
@@ -151,6 +151,39 @@ public class ConditionController {
                                 return;
                             default:
                                 return;
+                        }
+                    }
+                    if (outFile.exists() && outFile.isDirectory()) {
+                        outFile = new File(String.format("%s\\%s.out.xlsx", outFile, inFile.getName()));
+                        outPath = outFile.getAbsolutePath();
+                        int newPath = JOptionPane.showConfirmDialog(
+                                null,
+                                String.format("你选择的输出文件的是一个目录, 那么我输出到 %s 哦?", outFile.getAbsolutePath()),
+                                "WARNING",
+                                JOptionPane.YES_NO_OPTION
+                        );
+                        switch (newPath) {
+                            case JOptionPane.YES_OPTION:
+                                break;
+                            case JOptionPane.NO_OPTION:
+                                return;
+                            default:
+                                return;
+                        }
+                    }
+                    if (!outFile.exists()) {
+                        // 只创建父目录, 其他管不了;
+                        File parentDir = new File(outFile.getParent());
+                        if (!parentDir.exists()) {
+                            if (!parentDir.mkdirs()) {
+                                JOptionPane.showMessageDialog(
+                                        null,
+                                        "创建目录失败, 请选择正确的路径!",
+                                        "ERROR",
+                                        JOptionPane.ERROR_MESSAGE
+                                );
+                                return;
+                            }
                         }
                     }
                     CoreApiProxy apiProxy = new CoreApiProxy.Builder()
