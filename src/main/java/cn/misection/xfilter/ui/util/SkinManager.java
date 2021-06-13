@@ -1,5 +1,6 @@
 package cn.misection.xfilter.ui.util;
 
+import cn.misection.xfilter.ui.config.PropertiesBundle;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
@@ -16,25 +17,33 @@ public class SkinManager {
 
     private static SkinStatus status = SkinStatus.INTELLIJ;
 
-    private static boolean beenDark = false;
+    private static final boolean beenDark = Boolean.parseBoolean(
+            String.valueOf(
+                    PropertiesProxy.getProperty(
+                            PropertiesBundle.DARK.getLiteral())));
 
     private SkinManager() {
         throw new RuntimeException("here are no skinProxy instance for you");
     }
 
-    public static void changeSkin() {
+    public static void chooseSetSkinMod() {
         if (beenDark) {
-            setIntellijSkin();
-        } else {
             setDarculaSkin();
+        } else {
+            setIntellijSkin();
         }
+    }
+
+    public static void changeDarkMod() {
+        PropertiesProxy.putAndSave(
+                PropertiesBundle.DARK.getLiteral(),
+                String.valueOf(!beenDark));
     }
 
     public static void setDarculaSkin() {
         try {
             UIManager.setLookAndFeel(new FlatDarculaLaf());
             status = SkinStatus.DARCULA;
-            beenDark = true;
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
@@ -44,18 +53,12 @@ public class SkinManager {
         try {
             UIManager.setLookAndFeel(new FlatIntelliJLaf());
             status = SkinStatus.INTELLIJ;
-            beenDark = false;
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
     }
-}
 
-enum SkinStatus {
-    /**
-     * 皮肤状态;
-     */
-    INTELLIJ,
-
-    DARCULA,
+    public static boolean isBeenDark() {
+        return beenDark;
+    }
 }

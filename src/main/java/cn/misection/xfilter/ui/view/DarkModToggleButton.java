@@ -1,5 +1,7 @@
 package cn.misection.xfilter.ui.view;
 
+import cn.misection.xfilter.ui.util.SkinManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -8,30 +10,61 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 
-public class JsToggleButton extends JPanel {
-    //绘制参数设定
-    public Color bgColor = new Color(0xFFFFFF); //主背景色
-    public Color lineColor = new Color(0xFFFFFF); //描边
-    public Color darkColor = new Color(0xE1E1E1); //灰色填充
-    public Color lightColor = new Color(0x33B4FF); //高亮填充
-    public int padding = 2;  //轮廓线与内部圆的距离
+/**
+ * @author Administrator
+ */
+public class DarkModToggleButton extends JPanel {
+    /**
+     * 绘制参数设定主背景色;
+     */
+    public Color bgColor = new Color(0xFFFFFF);
 
-    private boolean selected = true; // 开关, ON/OFF
+    /**
+     * 描边;
+     */
+    public Color lineColor = new Color(0xFFFFFF);
 
-    //添加鼠标事件
-    public JsToggleButton() {
+    /**
+     * 灰色填充;
+     */
+    public Color darkColor = new Color(0xE1E1E1);
+
+    /**
+     * 高亮填充;
+     */
+    public Color lightColor = new Color(0x33B4FF);
+    /**
+     * 轮廓线与内部圆的距离
+     */
+    public int padding = 2;
+
+    /**
+     * 开关, ON/OFF;
+     */
+    private boolean selected = SkinManager.isBeenDark();
+
+    /**
+     * 监听属性;
+     */
+    private StateListener stateListener;
+
+    /**
+     * 添加鼠标事件;
+     */
+    public DarkModToggleButton() {
         this.addMouseListener(new MouseAdapter() {
-
             @Override
             public void mouseClicked(MouseEvent e) {
                 onMouseClicked();
             }
-
         });
     }
 
-
-    @Override//绘制
+    /**
+     * 绘制;
+     * @param g
+     */
+    @Override
     protected void paintComponent(Graphics g) {
         // TODO Auto-generated method stub
         super.paintComponent(g);
@@ -62,10 +95,11 @@ public class JsToggleButton extends JPanel {
         //绘制外部轮廓线
         Shape arc1 = new Arc2D.Double(r1, 90, 180, Arc2D.OPEN);
         Shape arc2 = new Arc2D.Double(r2, 270, 180, Arc2D.OPEN);
-
-        Path2D outline = new Path2D.Double(); //外轮廓，使用拼装路径
+        //外轮廓，使用拼装路径;
+        Path2D outline = new Path2D.Double();
         outline.append(arc1.getPathIterator(null), false);
-        outline.append(arc2.getPathIterator(null), true);  // 右半圆弧
+        // 右半圆弧;
+        outline.append(arc2.getPathIterator(null), true);
         outline.closePath();
         g2d.setPaint(lineColor);
         g2d.draw(outline);
@@ -82,28 +116,46 @@ public class JsToggleButton extends JPanel {
     }
 
 
-    // 获取数据
+    /**
+     * 获取数据;
+     * @return
+     */
     public boolean isSelected() {
         return this.selected;
     }
 
-    // 设置数据
-    public void setSelected(boolean selected) {
+    /**
+     * 设置数据;
+     * @param selected
+     */
+    public void setSelectedAndRepaint(boolean selected) {
         this.selected = selected;
         repaint();
     }
 
-    // 切换开关
+    /**
+     * 切换开关;
+     */
     public void toggle() {
         this.selected = !this.selected;
         repaint();
     }
 
-
-    // 画内部的小圆
-    private void drawCircleInside(Graphics2D g2d, Rectangle rect,
-                                  int deflate, Paint lineColor, Paint fillColor) {
-        Rectangle r = new Rectangle(rect); // 做一个备份，不会修改传入的rect
+    /**
+     * 画内部的小圆;
+     * @param g2d
+     * @param rect
+     * @param deflate
+     * @param lineColor
+     * @param fillColor
+     */
+    private void drawCircleInside(Graphics2D g2d,
+                                  Rectangle rect,
+                                  int deflate,
+                                  Paint lineColor,
+                                  Paint fillColor) {
+        // 做一个备份，不会修改传入的rect;
+        Rectangle r = new Rectangle(rect);
         r.x += deflate;
         r.y += deflate;
         r.width -= (deflate * 2);
@@ -119,24 +171,29 @@ public class JsToggleButton extends JPanel {
         g2d.fill(shape);
     }
 
-    //自定义接口
-    public interface StateListener  //内部类+接口
-    {
+    /**
+     * 自定义接口 内部类+接口;
+     */
+    public interface StateListener {
         void stateChanged(Object source);
     }
 
-    private StateListener stateListener;//属性
-
-    public void setStateListener(StateListener listener) {
-        this.stateListener = listener;
-    }
-
-    //鼠标点击事件
+    /**
+     * 鼠标点击事件;
+     */
     private void onMouseClicked() {
         toggle(); //点击时，切换状态
+        JOptionPane.showMessageDialog(null,
+                "切换夜间模式状态成功, 将在重启应用后生效");
+        SkinManager.changeDarkMod();
         //自定义接口
         if (stateListener != null) {
             stateListener.stateChanged(this);
         }
     }
+
+    public void setStateListener(StateListener listener) {
+        this.stateListener = listener;
+    }
+
 }
