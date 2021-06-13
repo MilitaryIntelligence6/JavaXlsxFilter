@@ -19,10 +19,6 @@ import java.io.File;
  * @author Administrator
  */
 public class ConditionController {
-    /**
-     * database file
-     */
-    private final ConditionDao conditionDao = ConditionDaoImpl.getInstance();
 
     private final ConditionService service = ConditionServiceImpl.getInstance();
 
@@ -37,7 +33,7 @@ public class ConditionController {
     }
 
     private void init() {
-        conditionViewPanel.loadAppendData(conditionDao.value().toArray());
+        conditionViewPanel.loadAppendData(service.value().toArray());
         registerListeners();
     }
 
@@ -92,7 +88,7 @@ public class ConditionController {
                 return;
             }
             // update data;
-            conditionDao.saveAddChange(new ConditionEntity(condition));
+            service.add(new ConditionEntity(condition));
             // updateUI;
             controlPanel.reset();
             conditionViewPanel.addTail(condition);
@@ -105,7 +101,7 @@ public class ConditionController {
                     int selectedRow = conditionViewPanel.getDataTable().getSelectedRow();
                     if (selectedRow != -1) {
                         conditionViewPanel.delSelected(selectedRow);
-                        conditionDao.saveRemoveChange(selectedRow);
+                        service.remove(selectedRow);
                     }
                 }
         );
@@ -114,7 +110,7 @@ public class ConditionController {
     private void registerDelAllListener() {
         conditionViewPanel.getDelAllButton().addActionListener(
                 e -> {
-                    conditionDao.saveClearChange();
+                    service.clear();
                     conditionViewPanel.clearUI();
                 }
         );
@@ -224,7 +220,7 @@ public class ConditionController {
                     CoreApiProxy apiProxy = new CoreApiProxy.Builder()
                             .putInPath(inPath)
                             .putOutPath(outPath)
-                            .putConditionList(conditionDao.value())
+                            .putConditionList(service.value())
                             .build();
                     apiProxy.callFilter();
                     JOptionPane.showMessageDialog(

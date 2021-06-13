@@ -44,10 +44,10 @@ public class ConditionServiceImpl implements ConditionService  {
     }
 
     private void initValue() {
-//        Object[] loadOutFromDb = dao.value();
-//        for (Object obj : loadOutFromDb) {
-//            valueList.add(new ConditionEntity(NullSafe.safeObjToString(obj)));
-//        }
+        Object[] loadOutFromDb = dao.data();
+        for (Object obj : loadOutFromDb) {
+            value.add(new ConditionEntity(NullSafe.safeObjToString(obj)));
+        }
     }
 
     /**
@@ -64,7 +64,7 @@ public class ConditionServiceImpl implements ConditionService  {
     @Override
     public boolean remove(int index) {
         value.remove(index);
-        return dao.saveRemoveChange(index);
+        return dao.saveRemoveChange(value);
     }
 
     @Override

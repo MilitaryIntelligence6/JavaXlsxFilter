@@ -22,10 +22,10 @@ public interface ConditionDao {
 
     /**
      * 移除条件;
-     * @param index
+     * @param newData
      * @return
      */
-    boolean saveRemoveChange(int index);
+    boolean saveRemoveChange(List<ConditionEntity> newData);
 
     /**
      * 清除所有;
@@ -38,5 +38,5 @@ public interface ConditionDao {
      * TODO: 到 service;
      * @return
      */
-    List<ConditionEntity> value();
+    Object[] data();
 }

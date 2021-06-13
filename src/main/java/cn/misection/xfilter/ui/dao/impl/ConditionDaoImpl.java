@@ -19,15 +19,9 @@ public class ConditionDaoImpl implements ConditionDao {
 
     private final File dbFile = requireDbFile();
 
-    /**
-     * TODO , 应该放到服务层去;
-     */
-    private final List<ConditionEntity> valueList = new LinkedList<>();
-
     private final Object[] rawData = loadOutFromDb();
 
     private ConditionDaoImpl() {
-        init();
     }
 
     public static ConditionDaoImpl getInstance() {
@@ -41,17 +35,6 @@ public class ConditionDaoImpl implements ConditionDao {
         return instance;
     }
 
-    private void init() {
-        initValue();
-    }
-
-    private void initValue() {
-        Object[] loadOutFromDb = loadOutFromDb();
-        for (Object obj : loadOutFromDb) {
-            valueList.add(new ConditionEntity(NullSafe.safeObjToString(obj)));
-        }
-    }
-
     /**
      * adds user to our collection;
      *
@@ -59,25 +42,22 @@ public class ConditionDaoImpl implements ConditionDao {
      */
     @Override
     public boolean saveAddChange(ConditionEntity condition) {
-        valueList.add(condition);
         return saveCondition(condition);
     }
 
     @Override
-    public boolean saveRemoveChange(int index) {
-        valueList.remove(index);
-        return reSave(this.valueList);
+    public boolean saveRemoveChange(List<ConditionEntity> newData) {
+        return reSave(newData);
     }
 
     @Override
     public boolean saveClearChange() {
-        valueList.clear();
         return clearDb();
     }
 
     @Override
-    public List<ConditionEntity> value() {
-        return valueList;
+    public Object[] data() {
+        return rawData;
     }
 
     private boolean clearDb() {
