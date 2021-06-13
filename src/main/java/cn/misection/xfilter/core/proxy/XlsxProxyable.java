@@ -13,7 +13,7 @@ public interface XlsxProxyable {
     /**
      * 输出;
      */
-    void output();
+    void output(String outPath);
 
     /**
      * 获取数据;

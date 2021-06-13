@@ -22,4 +22,10 @@ public class NullSafe {
                 ? StringPool.EMPTY.value()
                 : string.trim();
     }
+
+    public static String safeObjToString(Object obj) {
+        return obj == null
+                ? StringPool.EMPTY.value()
+                : String.valueOf(obj).trim();
+    }
 }

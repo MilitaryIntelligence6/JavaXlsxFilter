@@ -1,42 +1,65 @@
 package cn.misection.xfilter.ui.view;
 
 import cn.misection.xfilter.common.constant.StringPool;
+import cn.misection.xfilter.common.util.NullSafe;
+import cn.misection.xfilter.ui.config.PropertiesBundle;
+import cn.misection.xfilter.ui.constant.ChooseFileType;
+import cn.misection.xfilter.ui.util.PropertiesProxy;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 /**
  * @author Administrator
  */
 public class ControlPanel extends JPanel {
 
-    private final JPanel fileChooserPanel = new JPanel();
-
-    private final JLabel fileChoosePrompt = new JLabel("请输入文件路径或者从下方按钮选择文件");
-
-    private final JPanel pathFieldPanel = new JPanel();
-
-    private final JTextField filePathField = new JTextField();
-
-    private final JButton openChooseButton = new JButton("选择文件");
-
-    private final JFileChooser fileChooser = new JFileChooser();
-
-    private final JPanel buttonPanel = new JPanel();
-
-    private final JLabel conditionLabel = new JLabel("输入筛选条件: ");
-
-    private final JTextField conditionField = new JTextField();
-
-    private final JButton addConditionButton = new JButton("增加筛选过滤条件");
-
-    private final JButton viewButton = new JButton("View All Users");
+    private static final Dimension uniteTextFieldDimension = new Dimension(200, 30);
 
     private final JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
 
+    private final JButton exitButton = new JButton("退出系统");
+
     private final JLabel darkLabel = new JLabel("夜间模式");
 
-    private final DarkModToggleButton switchSkinButton = new DarkModToggleButton();
+    private final JPanel darkButtonPanel = new JPanel();
+
+    private final DarkModToggleButton switchDarkButton = new DarkModToggleButton();
+
+    private final JPanel inPathFieldPanel = new JPanel();
+
+    private final JLabel inFileChoosePrompt = new JLabel("请输入或者从下方按钮选择 输入文件 路径");
+
+    private final JTextField inFilePathField = new JTextField();
+
+    private final JButton openChooseInFileButton = new JButton("选择输入");
+
+    private final JFileChooser inFileChooser = new JFileChooser(
+            requireFile(PropertiesBundle.LAST_IN_FILE)
+    );
+
+    private final JPanel outPathFieldPanel = new JPanel();
+
+    private final JLabel outFileChoosePrompt = new JLabel("请输入或者从下方按钮选择 输出文件 路径:");
+
+    private final JTextField outFilePathField = new JTextField();
+
+    private final JButton openChooseOutFileButton = new JButton("选择输出");
+
+    private final JFileChooser outFileChooser = new JFileChooser(
+            requireFile(PropertiesBundle.LAST_OUT_FILE)
+    );
+
+    private final JButton runButton = new JButton("go!");
+
+    private final JLabel conditionLabel = new JLabel("输入筛选过滤条件: ");
+
+    private final JPanel conditionInputPanel = new JPanel();
+
+    private final JTextField conditionField = new JTextField();
+
+    private final JButton addConditionButton = new JButton("添加条件");
 
     public ControlPanel() {
         init();
@@ -45,102 +68,49 @@ public class ControlPanel extends JPanel {
     private void init() {
         initLayout();
         initToolBar();
-        initFileChoosePanel();
-        initButtonPanel();
+        initFileChooseGroup();
+        initAddFilterButtonGroup();
     }
 
 
     private void initLayout() {
-        this.setLayout(new GridLayout(2, 1, 10, 10));
-//        this.setLayout(new BorderLayout());
-        this.add(fileChooserPanel);
-        this.add(buttonPanel);
-//        // space between fields
-//        Insets fieldsInset = new Insets(0, 0, 10, 0);
-//        // space between buttons
-//        Insets buttonInset = new Insets(20, 0, 0, 0);
-//        // uses Grid Bag Layout
-//        setLayout(new GridBagLayout());
-//        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-//
-//        this.add(fileChooser);
-
-//        gridBagConstraints.insets = fieldsInset;
-//        gridBagConstraints.fill = GridBagConstraints.NONE;
-//
-//        gridBagConstraints.gridx = 0;
-//        gridBagConstraints.gridy = 0;
-//        gridBagConstraints.anchor = GridBagConstraints.WEST;
-//
-//        this.add(conditionLabel, gridBagConstraints);
-//
-//        gridBagConstraints.gridx = 0;
-//        gridBagConstraints.gridy = 1;
-//
-//        conditionField.setPreferredSize(new Dimension(200, 40));
-//        this.add(conditionField, gridBagConstraints);
-//
-//        gridBagConstraints.gridx = 0;
-//        gridBagConstraints.gridy = 2;
-//        gridBagConstraints.anchor = GridBagConstraints.WEST;
-//
-////        add(lastnameLabel, gridBagConstraints);
-//
-//        gridBagConstraints.gridx = 0;
-//        gridBagConstraints.gridy = 3;
-//
-////        add(lastNameField, gridBagConstraints);
-//
-//        gridBagConstraints.gridx = 0;
-//        gridBagConstraints.gridy = 4;
-//        gridBagConstraints.insets = buttonInset;
-//
-//        add(addConditionButton, gridBagConstraints);
-//
-//        gridBagConstraints.gridx = 0;
-//        gridBagConstraints.gridy = 5;
-//        gridBagConstraints.insets = buttonInset;
-//
-//        add(viewButton, gridBagConstraints);
+        this.setLayout(new GridLayout(8, 1, 5, 5));
     }
 
-    private void initFileChoosePanel() {
-//        fileChooserPanel.add(fileChooser);
-//        fileChooser.getSelectedFile();
-        fileChooserPanel.setLayout(new GridLayout(4, 1, 10, 10));
-        fileChooserPanel.add(toolBar);
-        fileChooserPanel.add(pathFieldPanel);
-        filePathField.setPreferredSize(new Dimension(200, 30));
-        pathFieldPanel.add(filePathField);
-        pathFieldPanel.add(openChooseButton);
+    private void initFileChooseGroup() {
+        this.add(toolBar);
+        this.add(inFileChoosePrompt);
+        this.add(inPathFieldPanel);
+        this.add(outFileChoosePrompt);
+        this.add(outPathFieldPanel);
 
-        openChooseButton.addActionListener(
-                e -> {
-                    fileChooser.showOpenDialog(null);
-                    filePathField.setText(String.valueOf(fileChooser.getSelectedFile()));
-                }
-        );
+        inFilePathField.setPreferredSize(uniteTextFieldDimension);
+        inPathFieldPanel.add(inFilePathField);
+        inPathFieldPanel.add(openChooseInFileButton);
+
+        outFilePathField.setPreferredSize(uniteTextFieldDimension);
+        outPathFieldPanel.add(outFilePathField);
+        outPathFieldPanel.add(openChooseOutFileButton);
 
     }
 
-    private void initButtonPanel() {
-        addConditionButton.setPreferredSize(new Dimension(278, 40));
-        viewButton.setPreferredSize(new Dimension(278, 40));
-
-        buttonPanel.setLayout(new GridLayout(5, 1));
-        buttonPanel.add(conditionLabel);
-        buttonPanel.add(conditionField);
-        buttonPanel.add(addConditionButton);
-        buttonPanel.add(viewButton);
+    private void initAddFilterButtonGroup() {
+        this.add(runButton);
+        this.add(conditionLabel);
+        this.add(conditionInputPanel);
+        conditionField.setPreferredSize(uniteTextFieldDimension);
+        conditionInputPanel.add(conditionField);
+        conditionInputPanel.add(addConditionButton);
     }
 
     private void initToolBar() {
-        toolBar.setLayout(new FlowLayout());
+        toolBar.setLayout(new GridLayout(1, 2, 20, 20));
         toolBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, toolBar.getMinimumSize().height));
-        darkLabel.setPreferredSize(new Dimension(50, 20));
-        switchSkinButton.setPreferredSize(new Dimension(50, 20));
-        toolBar.add(darkLabel);
-        toolBar.add(switchSkinButton);
+        darkButtonPanel.add(darkLabel);
+        darkButtonPanel.add(switchDarkButton);
+        switchDarkButton.setPreferredSize(new Dimension(50, 20));
+        toolBar.add(exitButton);
+        toolBar.add(darkButtonPanel);
     }
 
     /**
@@ -154,15 +124,71 @@ public class ControlPanel extends JPanel {
         return String.valueOf(conditionField.getText()).trim();
     }
 
+    public void chooseAndSave(ChooseFileType chooseFileType) {
+        JTextField textField = null;
+        JFileChooser fileChooser = null;
+        PropertiesBundle bundle = null;
+        switch (chooseFileType) {
+            case IN:
+                textField = inFilePathField;
+                fileChooser = inFileChooser;
+                bundle = PropertiesBundle.LAST_IN_FILE;
+                break;
+            case OUT:
+                textField = outFilePathField;
+                fileChooser = outFileChooser;
+                bundle = PropertiesBundle.LAST_OUT_FILE;
+                break;
+            default:
+                break;
+        }
+        int choice = fileChooser.showOpenDialog(null);
+        switch (choice) {
+            case JFileChooser.APPROVE_OPTION:
+                textField.setText(NullSafe.safeObjToString(fileChooser.getSelectedFile()));
+                break;
+            case JFileChooser.CANCEL_OPTION:
+            default:
+                break;
+        }
+        if (fileChooser.getSelectedFile() != null) {
+            PropertiesProxy.putAndSave(bundle.getLiteral(), String.valueOf(fileChooser.getSelectedFile()));
+        }
+    }
+
+    private File requireFile(PropertiesBundle bundle) {
+        File file = new File(String.valueOf(PropertiesProxy.getProperty(bundle.getLiteral())));
+        if (file.exists()) {
+            return file;
+        }
+        return null;
+    }
+
+    public JButton getRunButton() {
+        return runButton;
+    }
+
     public JButton getAddConditionButton() {
         return addConditionButton;
     }
 
-    public JButton getViewButton() {
-        return viewButton;
+    public JButton getOpenChooseInFileButton() {
+        return openChooseInFileButton;
     }
 
-    public JFileChooser getFileChooser() {
-        return fileChooser;
+    public JButton getOpenChooseOutFileButton() {
+        return openChooseOutFileButton;
+    }
+
+    public JTextField getInFilePathField() {
+        return inFilePathField;
+    }
+
+    public JTextField getOutFilePathField() {
+        return outFilePathField;
+    }
+
+    public JButton getExitButton() {
+        return exitButton;
     }
 }

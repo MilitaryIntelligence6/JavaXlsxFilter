@@ -38,10 +38,6 @@ public class MapWordFilter implements Filterable {
 
     @Override
     public void filter() {
-        sumStateOwned();
-    }
-
-    private void sumStateOwned() {
         for (List<String> line : dataLineListRef) {
             sumPreLine(line);
         }

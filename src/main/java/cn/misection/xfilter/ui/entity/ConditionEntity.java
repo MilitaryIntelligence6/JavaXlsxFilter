@@ -18,4 +18,9 @@ public class ConditionEntity {
     public String value() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }

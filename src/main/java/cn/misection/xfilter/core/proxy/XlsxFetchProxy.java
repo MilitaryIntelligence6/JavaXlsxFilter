@@ -50,12 +50,11 @@ public class XlsxFetchProxy implements XlsxProxyable {
     }
 
     @Override
-    public void output() {
+    public void output(String outPath) {
         try {
-            ExcelUtils.getInstance()
-                    .exportObjects2Excel(
+            ExcelUtils.getInstance().exportObjects2Excel(
                             this.dataLineList,
-                            TestOutputFile.PATH
+                            outPath
                     );
         } catch (IOException e) {
             e.printStackTrace();

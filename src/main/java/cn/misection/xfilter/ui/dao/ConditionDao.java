@@ -1,5 +1,9 @@
 package cn.misection.xfilter.ui.dao;
 
+import cn.misection.xfilter.ui.entity.ConditionEntity;
+
+import java.util.List;
+
 /**
  * @author Military Intelligence 6 root
  * @version 1.0.0
@@ -14,12 +18,25 @@ public interface ConditionDao {
      * @param condition
      * @return
      */
-    boolean add(String condition);
+    boolean addSave(ConditionEntity condition);
 
     /**
      * 移除条件;
      * @param condition
      * @return
      */
-    boolean remove(String condition);
+    boolean removeSave();
+
+    /**
+     * 清除所有;
+     * @return
+     */
+    boolean clearSave();
+
+    /**
+     * 获取value;
+     * TODO: 到 service;
+     * @return
+     */
+    List<ConditionEntity> value();
 }

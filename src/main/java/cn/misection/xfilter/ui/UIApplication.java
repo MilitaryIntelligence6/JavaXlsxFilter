@@ -10,8 +10,6 @@ import javax.swing.*;
  */
 public class UIApplication {
     public static void main(String[] args) {
-        // runs in AWT thread
-//        SkinUtil.setDarculaSkin();
         SwingUtilities.invokeLater(MainFrame::new);
     }
 }

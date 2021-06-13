@@ -16,6 +16,10 @@ public enum PropertiesBundle {
      * 夜间模式;
      */
     DARK("dark"),
+
+    LAST_IN_FILE("lastInFile"),
+
+    LAST_OUT_FILE("lastOutFile"),
     ;
 
     private final String literal;

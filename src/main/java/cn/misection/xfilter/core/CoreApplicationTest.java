@@ -1,6 +1,7 @@
 package cn.misection.xfilter.core;
 
 import cn.misection.xfilter.core.constant.TestFile;
+import cn.misection.xfilter.core.constant.TestOutputFile;
 import cn.misection.xfilter.core.filter.Filterable;
 import cn.misection.xfilter.core.filter.MapWordFilter;
 import cn.misection.xfilter.core.proxy.XlsxFetchProxy;
@@ -33,6 +34,6 @@ public class CoreApplicationTest {
         );
         filter.filter();
         System.out.println(fetchProxy.data());
-        fetchProxy.output();
+        fetchProxy.output(TestOutputFile.PATH);
     }
 }
