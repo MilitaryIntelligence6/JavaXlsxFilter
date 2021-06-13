@@ -1,6 +1,7 @@
 package cn.misection.xfilter.ui.view;
 
 
+import cn.misection.xfilter.ui.config.ResourceBundle;
 import cn.misection.xfilter.ui.controller.ConditionController;
 import cn.misection.xfilter.ui.util.CenterUtil;
 import cn.misection.xfilter.ui.util.SkinManager;
@@ -43,7 +44,7 @@ public class MainFrame extends JFrame {
 
     private void initBaseUI() {
         this.setLayout(new BorderLayout());
-        this.setIconImage(new ImageIcon("src/assets/appicon.png").getImage());
+        this.setIconImage(new ImageIcon(ResourceBundle.ICON.getPath()).getImage());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 

@@ -12,9 +12,11 @@ public enum ResourceBundle {
     /**
      * 配置, 数据库等路径;
      */
-    CONFIG("res/properties/config.properties"),
+    CONFIG("./res/properties/config.properties"),
 
-    CONDITION_DB("res/db/condition.db"),
+    CONDITION_DB("./res/db/condition.db"),
+
+    ICON("./res/assets/JavaSunFlowMisection.png"),
     ;
 
     private final String path;
