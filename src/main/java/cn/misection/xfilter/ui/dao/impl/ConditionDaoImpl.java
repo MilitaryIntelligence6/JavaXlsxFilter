@@ -42,25 +42,36 @@ public class ConditionDaoImpl implements ConditionDao {
      */
     @Override
     public boolean saveAddChange(ConditionEntity condition) {
-        return saveCondition(condition);
+        try {
+            BufferedWriter saveWriter = new BufferedWriter(new FileWriter(dbFile, true));
+            saveWriter.write(condition.value());
+            saveWriter.newLine();
+            saveWriter.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Override
     public boolean saveRemoveChange(List<ConditionEntity> newData) {
-        return reSave(newData);
+        try {
+            BufferedWriter reSaveWriter = new BufferedWriter(new FileWriter(dbFile, false));
+            for (ConditionEntity condition : newData) {
+                reSaveWriter.write(condition.value());
+                reSaveWriter.newLine();
+            }
+            reSaveWriter.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Override
     public boolean saveClearChange() {
-        return clearDb();
-    }
-
-    @Override
-    public Object[] data() {
-        return rawData;
-    }
-
-    private boolean clearDb() {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(dbFile, false));
             writer.close();
@@ -69,6 +80,11 @@ public class ConditionDaoImpl implements ConditionDao {
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public Object[] data() {
+        return rawData;
     }
 
     /**
@@ -86,37 +102,6 @@ public class ConditionDaoImpl implements ConditionDao {
             e.printStackTrace();
         }
         return new Object[0];
-    }
-
-    /**
-     * saves user to database file;
-     */
-    private boolean saveCondition(ConditionEntity condition) {
-        try {
-            BufferedWriter saveWriter = new BufferedWriter(new FileWriter(dbFile, true));
-            saveWriter.write(condition.value());
-            saveWriter.newLine();
-            saveWriter.close();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    private boolean reSave(List<ConditionEntity> valueList) {
-        try {
-            BufferedWriter reSaveWriter = new BufferedWriter(new FileWriter(dbFile, false));
-            for (ConditionEntity condition : valueList) {
-                reSaveWriter.write(condition.value());
-                reSaveWriter.newLine();
-            }
-            reSaveWriter.close();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
     private File requireDbFile() {
