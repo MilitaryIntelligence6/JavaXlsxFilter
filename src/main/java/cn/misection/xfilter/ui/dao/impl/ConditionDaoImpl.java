@@ -105,7 +105,7 @@ public class ConditionDaoImpl implements ConditionDao {
     }
 
     private File requireDbFile() {
-        URL resource = ConditionDaoImpl.class.getResource(ResourceBundle.CONDITION_DB.getPath());
+        File resource = new File(ResourceBundle.CONDITION_DB.getPath());
         if (resource != null) {
             String path = resource.getPath();
             File file = new File(path);

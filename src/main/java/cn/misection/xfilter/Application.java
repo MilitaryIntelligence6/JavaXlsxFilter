@@ -1,6 +1,8 @@
 package cn.misection.xfilter;
 
-import cn.misection.xfilter.ui.UIApplication;
+import cn.misection.xfilter.ui.view.MainFrame;
+
+import javax.swing.*;
 
 /**
  * @author Military Intelligence 6 root
@@ -11,6 +13,6 @@ import cn.misection.xfilter.ui.UIApplication;
  */
 public class Application {
     public static void main(String[] args) {
-        UIApplication.main(args);
+        SwingUtilities.invokeLater(MainFrame::new);
     }
 }

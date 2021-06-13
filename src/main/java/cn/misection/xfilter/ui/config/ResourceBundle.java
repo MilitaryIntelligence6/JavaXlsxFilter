@@ -12,9 +12,9 @@ public enum ResourceBundle {
     /**
      * 配置, 数据库等路径;
      */
-    CONFIG("/properties/config.properties"),
+    CONFIG("res/properties/config.properties"),
 
-    CONDITION_DB("/db/condition.db"),
+    CONDITION_DB("res/db/condition.db"),
     ;
 
     private final String path;

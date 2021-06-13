@@ -38,22 +38,16 @@ public class MainFrame extends JFrame {
         initBaseUI();
         initSubViewAndLayout();
         initBounds();
-//        initToolBar();
         this.setVisible(true);
     }
 
     private void initBaseUI() {
-        // sets our layout as a card layout
         this.setLayout(new BorderLayout());
-        // initialize user controller
-        // icon for our application
         this.setIconImage(new ImageIcon("src/assets/appicon.png").getImage());
-        // size of our application frame
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private void initSubViewAndLayout() {
-//        this.add(toolBar, BorderLayout.NORTH);
         this.add(controlPanel, BorderLayout.WEST);
         this.add(conditionViewPanel, BorderLayout.CENTER);
     }

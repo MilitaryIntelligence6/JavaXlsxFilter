@@ -1,11 +1,9 @@
 package cn.misection.xfilter.ui.util;
 
+import cn.misection.xfilter.ui.config.BuildConfig;
 import cn.misection.xfilter.ui.config.ResourceBundle;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.Properties;
 
@@ -21,10 +19,9 @@ public class PropertiesProxy {
     private static final Properties properties = new Properties();
 
     static {
-        InputStream stream = PropertiesProxy.class
-                .getResourceAsStream(ResourceBundle.CONFIG.getPath());
+        File config = new File(ResourceBundle.CONFIG.getPath());
         try {
-            properties.load(stream);
+            properties.load(new FileReader(config));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -37,17 +34,12 @@ public class PropertiesProxy {
     public static void putAndSave(String key, String value) {
         properties.setProperty(key, value);
         try {
-            URL fileUrl = PropertiesProxy.class.getResource(ResourceBundle.CONFIG.getPath());
-            FileOutputStream fos = new FileOutputStream(new File(fileUrl.toURI()));
+            File file = new File(ResourceBundle.CONFIG.getPath());
+            FileOutputStream fos = new FileOutputStream(file);
             properties.store(fos, "TODO auto log");
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        System.out.println(PropertiesProxy.getProperty("hello"));
-        PropertiesProxy.putAndSave("hi", "goushi");
     }
 }
