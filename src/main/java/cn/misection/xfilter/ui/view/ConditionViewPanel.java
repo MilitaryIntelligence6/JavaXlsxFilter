@@ -3,9 +3,6 @@ package cn.misection.xfilter.ui.view;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.util.Stack;
-import java.util.Vector;
 
 /**
  * @author Administrator
@@ -20,14 +17,14 @@ public class ConditionViewPanel extends JPanel {
     /**
      * Table for user data;
      */
-    private final JTable userTable = new JTable();
+    private final JTable dataTable = new JTable();
 
     private final JToolBar toolBar = new JToolBar();
 
-    private final JScrollPane userTableScroll = new JScrollPane(userTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+    private final JScrollPane userTableScroll = new JScrollPane(dataTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
             JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-    private final DefaultTableModel defaultTableModel = (DefaultTableModel) userTable.getModel();
+    private final DefaultTableModel defaultTableModel = (DefaultTableModel) dataTable.getModel();
 
     /**
      * back button;
@@ -38,7 +35,6 @@ public class ConditionViewPanel extends JPanel {
 
     public ConditionViewPanel() {
         init();
-        initToolbar();
     }
 
     private void init() {
@@ -47,6 +43,9 @@ public class ConditionViewPanel extends JPanel {
         // scroll bar for table
         this.add(toolBar);
         this.add(userTableScroll);
+        defaultTableModel.setColumnIdentifiers(userTableColumn);
+        dataTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        initToolbar();
     }
 
     private void initToolbar() {
@@ -61,7 +60,6 @@ public class ConditionViewPanel extends JPanel {
      * @param showElements
      */
     public void loadAppendData(Object[] showElements) {
-        defaultTableModel.setColumnIdentifiers(userTableColumn);
         for (Object ele : showElements) {
             Object[] row = new String[]{String.valueOf(ele).trim()};
             defaultTableModel.addRow(row);
@@ -72,12 +70,16 @@ public class ConditionViewPanel extends JPanel {
         defaultTableModel.addRow(new String[]{value});
     }
 
+    public void delSelected(int selectedRow) {
+        defaultTableModel.removeRow(selectedRow);
+    }
+
     public void clearUI() {
         defaultTableModel.setDataVector(new Object[0][0], userTableColumn);
     }
 
-    public void reload() {
-
+    public JTable getDataTable() {
+        return dataTable;
     }
 
     public JButton getDelSelectedButton() {

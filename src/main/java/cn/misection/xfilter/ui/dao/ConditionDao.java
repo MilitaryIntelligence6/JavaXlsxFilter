@@ -25,7 +25,7 @@ public interface ConditionDao {
      * @param condition
      * @return
      */
-    boolean removeSave();
+    boolean removeSave(int index);
 
     /**
      * 清除所有;

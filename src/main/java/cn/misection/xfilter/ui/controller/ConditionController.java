@@ -4,7 +4,7 @@ import cn.misection.xfilter.common.util.NullSafe;
 import cn.misection.xfilter.ui.bridge.CoreApiProxy;
 import cn.misection.xfilter.ui.constant.ChooseFileType;
 import cn.misection.xfilter.ui.dao.ConditionDao;
-import cn.misection.xfilter.ui.dao.ConditionDaoImpl;
+import cn.misection.xfilter.ui.dao.impl.ConditionDaoImpl;
 import cn.misection.xfilter.ui.entity.ConditionEntity;
 import cn.misection.xfilter.ui.service.ConditionService;
 import cn.misection.xfilter.ui.service.impl.ConditionServiceImpl;
@@ -37,39 +37,32 @@ public class ConditionController {
 
     private void init() {
         conditionViewPanel.loadAppendData(conditionDao.value().toArray());
-        registerActionListener();
+        registerListeners();
     }
 
-    private void registerActionListener() {
-        controlPanel.getAddConditionButton().addActionListener(e -> {
-            String condition = this.controlPanel.condition();
-            if (condition.isEmpty()) {
-                JOptionPane.showMessageDialog(this.controlPanel, "条件不能为空!", "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            // update data;
-            conditionDao.addSave(new ConditionEntity(condition));
-            // updateUI;
-            controlPanel.reset();
-            conditionViewPanel.addTail(condition);
-        });
+    private void registerListeners() {
+        registerAddConditionListener();
+        registerDelSingleListener();
+        registerDelAllListener();
+        registerOpenInFileListener();
+        registerOpenOutFileListener();
+        registerExitListener();
+        registerRunListener();
+    }
 
-        conditionViewPanel.getDelAllButton().addActionListener(
-                e -> {
-                    conditionDao.clearSave();
-                    conditionViewPanel.clearUI();
-                }
-        );
-
+    private void registerOpenInFileListener() {
         controlPanel.getOpenChooseInFileButton().addActionListener(
                 e -> controlPanel.chooseAndSave(ChooseFileType.IN)
         );
+    }
 
+    private void registerOpenOutFileListener() {
         controlPanel.getOpenChooseOutFileButton().addActionListener(
                 e -> controlPanel.chooseAndSave(ChooseFileType.OUT)
         );
+    }
 
+    private void registerExitListener() {
         controlPanel.getExitButton().addActionListener(
                 e -> {
                     int choice = JOptionPane.showConfirmDialog(
@@ -87,6 +80,46 @@ public class ConditionController {
                     }
                 }
         );
+    }
+
+    private void registerAddConditionListener() {
+        controlPanel.getAddConditionButton().addActionListener(e -> {
+            String condition = this.controlPanel.condition();
+            if (condition.isEmpty()) {
+                JOptionPane.showMessageDialog(this.controlPanel, "条件不能为空!", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            // update data;
+            conditionDao.addSave(new ConditionEntity(condition));
+            // updateUI;
+            controlPanel.reset();
+            conditionViewPanel.addTail(condition);
+        });
+    }
+
+    private void registerDelSingleListener() {
+        conditionViewPanel.getDelSelectedButton().addActionListener(
+                e -> {
+                    int selectedRow = conditionViewPanel.getDataTable().getSelectedRow();
+                    if (selectedRow != -1) {
+                        conditionViewPanel.delSelected(selectedRow);
+                        conditionDao.removeSave(selectedRow);
+                    }
+                }
+        );
+    }
+
+    private void registerDelAllListener() {
+        conditionViewPanel.getDelAllButton().addActionListener(
+                e -> {
+                    conditionDao.clearSave();
+                    conditionViewPanel.clearUI();
+                }
+        );
+    }
+
+    private void registerRunListener() {
         controlPanel.getRunButton().addActionListener(
                 e -> {
                     String inPath = NullSafe.safeString(controlPanel.getInFilePathField().getText());

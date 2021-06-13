@@ -1,7 +1,8 @@
-package cn.misection.xfilter.ui.dao;
+package cn.misection.xfilter.ui.dao.impl;
 
 import cn.misection.xfilter.common.util.NullSafe;
 import cn.misection.xfilter.ui.config.ResourceBundle;
+import cn.misection.xfilter.ui.dao.ConditionDao;
 import cn.misection.xfilter.ui.entity.ConditionEntity;
 
 import java.io.*;
@@ -61,8 +62,9 @@ public class ConditionDaoImpl implements ConditionDao {
     }
 
     @Override
-    public boolean removeSave() {
-        return false;
+    public boolean removeSave(int index) {
+        valueList.remove(index);
+        return reSave();
     }
 
     @Override
@@ -119,6 +121,22 @@ public class ConditionDaoImpl implements ConditionDao {
             saveWriter.write(lastEntity.value());
             saveWriter.newLine();
             saveWriter.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private boolean reSave() {
+        try {
+            ConditionEntity lastEntity = valueList.get(valueList.size() - 1);
+            BufferedWriter reSaveWriter = new BufferedWriter(new FileWriter(dbFile, false));
+            for (ConditionEntity condition : valueList) {
+                reSaveWriter.write(condition.value());
+                reSaveWriter.newLine();
+            }
+            reSaveWriter.close();
             return true;
         } catch (IOException e) {
             e.printStackTrace();
