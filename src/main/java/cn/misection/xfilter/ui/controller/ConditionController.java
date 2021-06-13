@@ -91,14 +91,40 @@ public class ConditionController {
                 e -> {
                     String inPath = NullSafe.safeString(controlPanel.getInFilePathField().getText());
                     String outPath = NullSafe.safeString(controlPanel.getOutFilePathField().getText());
-                    if (inPath.isEmpty() || outPath.isEmpty()) {
+                    if (inPath.isEmpty()) {
                         JOptionPane.showMessageDialog(
                                 null,
-                                "输入或者输出文件的路径不能为空",
+                                "输入文件路径不能为空",
                                 "ERROR",
                                 JOptionPane.ERROR_MESSAGE
                         );
                         return;
+                    }
+                    if (!(inPath.endsWith(".xlsx") || inPath.endsWith(".xls"))) {
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "输入文件必须以.xlsx或者.xls结尾(虽然实际上没啥用)",
+                                "ERROR",
+                                JOptionPane.ERROR_MESSAGE
+                        );
+                        return;
+                    }
+                    if (outPath.isEmpty()) {
+                        outPath = String.format("%s.out.xlsx", inPath);
+                        int newPath = JOptionPane.showConfirmDialog(
+                                null,
+                                String.format("输出文件路径为空, 将使用%s作为输出路径, 我懒得再做判断了, 所以后缀比较长, 可以自行删除", outPath),
+                                "ERROR",
+                                JOptionPane.YES_NO_OPTION
+                        );
+                        switch (newPath) {
+                            case JOptionPane.YES_OPTION:
+                                break;
+                            case JOptionPane.NO_OPTION:
+                                return;
+                            default:
+                                return;
+                        }
                     }
                     File inFile = new File(inPath);
                     File outFile = new File(outPath);
@@ -133,6 +159,12 @@ public class ConditionController {
                             .putConditionList(conditionDao.value())
                             .build();
                     apiProxy.callFilter();
+                    JOptionPane.showMessageDialog(
+                            null,
+                            String.format("不出意外的话, 已经成功输出到%s", outPath),
+                            "恭喜你输出成功!",
+                            JOptionPane.PLAIN_MESSAGE
+                    );
                 }
         );
     }

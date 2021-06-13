@@ -42,7 +42,6 @@ public class CoreApiProxy {
                 filterWordList
         );
         filter.filter();
-        System.out.println(fetchProxy.data());
         fetchProxy.output(outPath);
     }
 
