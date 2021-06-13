@@ -21,13 +21,9 @@ public class MainFrame extends JFrame {
     }
     private final ControlPanel controlPanel = new ControlPanel();
 
-    private final DetailsPanel detailsPanel = new DetailsPanel();
+    private final ConditionViewPanel conditionViewPanel = new ConditionViewPanel();
 
-    private final ConditionController conditionController = new ConditionController(controlPanel, detailsPanel);
-
-    private final JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
-
-    private final DarkModToggleButton switchSkinButton = new DarkModToggleButton();
+    private final ConditionController conditionController = new ConditionController(controlPanel, conditionViewPanel);
 
     private static final int FRAME_WIDTH = 600;
 
@@ -42,6 +38,7 @@ public class MainFrame extends JFrame {
         initBaseUI();
         initSubViewAndLayout();
         initBounds();
+//        initToolBar();
         this.setVisible(true);
     }
 
@@ -56,14 +53,9 @@ public class MainFrame extends JFrame {
     }
 
     private void initSubViewAndLayout() {
-        // adds view to card layout with unique constraints
-        switchSkinButton.setPreferredSize(new Dimension(50, 20));
-        toolBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, toolBar.getMinimumSize().height));
-        toolBar.add(switchSkinButton);
-        this.add(toolBar, BorderLayout.NORTH);
-
+//        this.add(toolBar, BorderLayout.NORTH);
         this.add(controlPanel, BorderLayout.WEST);
-        this.add(detailsPanel, BorderLayout.CENTER);
+        this.add(conditionViewPanel, BorderLayout.CENTER);
     }
 
     private void initBounds() {

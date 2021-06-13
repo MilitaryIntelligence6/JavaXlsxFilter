@@ -5,7 +5,6 @@ import cn.misection.xfilter.ui.entity.ConditionEntity;
 
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,9 +15,11 @@ public class DataSource {
 
     private volatile static DataSource instance = null;
 
-    private static final File dbFile = requireDbFile();
+    private final File dbFile = requireDbFile();
 
-    private static final BufferedWriter bufWriter = requireBuf();
+    private final BufferedReader bufReader = requireBufReader();
+
+    private final BufferedWriter bufWriter = requireBufWriter();
 
     private final List<ConditionEntity> entityList = new LinkedList<>();
 
@@ -40,10 +41,9 @@ public class DataSource {
      *  reads user from database file;
      * @return
      */
-    public Object[] loadOut() {
+    public Object[] loadOutOnlyOnceFromDb() {
         Object[] objects;
         try {
-            BufferedReader bufReader = new BufferedReader(new FileReader(dbFile));
             // each lines to array
             objects = bufReader.lines().toArray();
             bufReader.close();
@@ -51,7 +51,7 @@ public class DataSource {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return new Object[0];
     }
 
     /**
@@ -64,24 +64,41 @@ public class DataSource {
         saveLast();
     }
 
+    public void clearData() {
+        clearInstance();
+        clearDb();
+    }
+
+    private void clearInstance() {
+        entityList.clear();
+    }
+
+    private void clearDb() {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(dbFile, false));
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * saves user to database file;
      */
     private void saveLast() {
         try {
             // user model
-            ConditionEntity lastEntity =
-                    entityList.get(entityList.size() - 1);
-            bufWriter.write(lastEntity.value());
-            bufWriter.newLine();
-            // prevents memory leak
-            bufWriter.close();
+            ConditionEntity lastEntity = entityList.get(entityList.size() - 1);
+            BufferedWriter saveWriter = new BufferedWriter(new FileWriter(dbFile, true));
+            saveWriter.write(lastEntity.value());
+            saveWriter.newLine();
+            saveWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static File requireDbFile() {
+    private File requireDbFile() {
         URL resource = DataSource.class.getResource(ResourceBundle.CONDITION_DB.getPath());
         if (resource != null) {
             String path = resource.getPath();
@@ -98,7 +115,17 @@ public class DataSource {
         return new File(ResourceBundle.CONDITION_DB.getPath());
     }
 
-    private static BufferedWriter requireBuf() {
+
+    private BufferedReader requireBufReader() {
+        try {
+            return new BufferedReader(new FileReader(dbFile));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private BufferedWriter requireBufWriter() {
         try {
             return new BufferedWriter(new FileWriter(dbFile, true));
         } catch (IOException e) {
