@@ -5,6 +5,8 @@ import cn.misection.xfilter.ui.config.ResourceBundle;
 
 import java.io.*;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -16,6 +18,9 @@ import java.util.Properties;
  */
 public class PropertiesProxy {
 
+    /**
+     * prop 自己就是 cache, 不需要再用 cache 封装;
+     */
     private static final Properties properties = new Properties();
 
     static {

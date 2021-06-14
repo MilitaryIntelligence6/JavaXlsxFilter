@@ -12,6 +12,10 @@ public enum StringPool {
      * 常用 String;
      */
     EMPTY(""),
+
+    SUFFIX_XLSX(".xlsx"),
+
+    SUFFIX_XLS(".xls"),
     ;
 
     private final String value;

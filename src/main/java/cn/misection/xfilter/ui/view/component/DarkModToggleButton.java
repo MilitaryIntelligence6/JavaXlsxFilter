@@ -1,4 +1,4 @@
-package cn.misection.xfilter.ui.view;
+package cn.misection.xfilter.ui.view.component;
 
 import cn.misection.xfilter.ui.util.SkinManager;
 

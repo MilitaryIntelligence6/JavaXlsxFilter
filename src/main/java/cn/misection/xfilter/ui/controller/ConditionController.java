@@ -1,19 +1,21 @@
 package cn.misection.xfilter.ui.controller;
 
+import cn.misection.xfilter.common.constant.StringPool;
 import cn.misection.xfilter.common.util.NullSafe;
 import cn.misection.xfilter.ui.bridge.CoreApiProxy;
+import cn.misection.xfilter.ui.config.PropertiesBundle;
 import cn.misection.xfilter.ui.constant.ChooseFileType;
-import cn.misection.xfilter.ui.constant.StringPool;
-import cn.misection.xfilter.ui.dao.ConditionDao;
-import cn.misection.xfilter.ui.dao.impl.ConditionDaoImpl;
 import cn.misection.xfilter.ui.entity.ConditionEntity;
 import cn.misection.xfilter.ui.service.ConditionService;
 import cn.misection.xfilter.ui.service.impl.ConditionServiceImpl;
+import cn.misection.xfilter.ui.util.PropertiesProxy;
 import cn.misection.xfilter.ui.view.ConditionViewPanel;
 import cn.misection.xfilter.ui.view.ControlPanel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * @author Administrator
@@ -117,7 +119,7 @@ public class ConditionController {
     }
 
     private void registerRunListener() {
-        controlPanel.getRunButton().addActionListener(
+        controlPanel.getGoRunButton().addActionListener(
                 e -> {
                     String inPath = NullSafe.safeString(controlPanel.getInFilePathField().getText());
                     String outPath = NullSafe.safeString(controlPanel.getOutFilePathField().getText());
@@ -157,12 +159,28 @@ public class ConditionController {
                                 return;
                         }
                     }
+                    // path string 合法, 进行文件判定并存储;
+                    PropertiesProxy.putAndSave(
+                            PropertiesBundle.LAST_IN_FILE.getLiteral(),
+                            inPath);
+                    PropertiesProxy.putAndSave(
+                            PropertiesBundle.LAST_OUT_FILE.getLiteral(),
+                            outPath);
                     File inFile = new File(inPath);
                     File outFile = new File(outPath);
                     if (!inFile.exists()) {
                         JOptionPane.showMessageDialog(
                                 null,
                                 "输入文件不存在, 请检查路径!",
+                                "ERROR",
+                                JOptionPane.ERROR_MESSAGE
+                        );
+                        return;
+                    }
+                    if (inFile.isDirectory()) {
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "输入文件是一个目录, 请检查路径重新输入!",
                                 "ERROR",
                                 JOptionPane.ERROR_MESSAGE
                         );
@@ -204,6 +222,15 @@ public class ConditionController {
                     }
                     if (!outFile.exists()) {
                         // 只创建父目录, 其他管不了;
+                        if (outFile.getParent() == null) {
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "错误的输出路径, 目录不存在且没有父目录!",
+                                    "ERROR",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                            return;
+                        }
                         File parentDir = new File(outFile.getParent());
                         if (!parentDir.exists()) {
                             if (!parentDir.mkdirs()) {
@@ -223,12 +250,24 @@ public class ConditionController {
                             .putConditionList(service.value())
                             .build();
                     apiProxy.callFilter();
-                    JOptionPane.showMessageDialog(
+                    int choice = JOptionPane.showConfirmDialog(
                             null,
-                            String.format("不出意外的话, 已经成功输出到%s", outPath),
+                            String.format("不出意外的话, 已经成功输出到%s\n 你是否要打开所在目录?", outPath),
                             "恭喜你输出成功!",
-                            JOptionPane.PLAIN_MESSAGE
+                            JOptionPane.YES_NO_OPTION
                     );
+                    switch (choice) {
+                        case JOptionPane.YES_OPTION:
+                            try {
+                                Desktop.getDesktop().open(outFile.getParentFile());
+                            } catch (IOException exception) {
+                                exception.printStackTrace();
+                            }
+                            break;
+                        case JOptionPane.NO_OPTION:
+                        default:
+                            break;
+                    }
                 }
         );
     }

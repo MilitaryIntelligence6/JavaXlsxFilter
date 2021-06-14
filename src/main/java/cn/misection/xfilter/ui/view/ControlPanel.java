@@ -5,6 +5,8 @@ import cn.misection.xfilter.common.util.NullSafe;
 import cn.misection.xfilter.ui.config.PropertiesBundle;
 import cn.misection.xfilter.ui.constant.ChooseFileType;
 import cn.misection.xfilter.ui.util.PropertiesProxy;
+import cn.misection.xfilter.ui.view.component.DarkModToggleButton;
+import cn.misection.xfilter.ui.view.component.DragDropTargetListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,11 +15,11 @@ import java.io.File;
 /**
  * @author Administrator
  */
-public class ControlPanel extends JPanel {
+public class ControlPanel extends JPanel implements Draggable {
 
     private static final Dimension uniteTextFieldDimension = new Dimension(200, 30);
 
-    private final JLabel conditionLabel = new JLabel("输入筛选过滤条件: ");
+    private final JLabel conditionLabel = new JLabel("输入筛选过滤条件, 如: 国有法人: ");
 
     private final JPanel conditionInputPanel = new JPanel();
 
@@ -37,9 +39,10 @@ public class ControlPanel extends JPanel {
 
     private final JPanel inPathFieldPanel = new JPanel();
 
-    private final JLabel inFileChoosePrompt = new JLabel("请输入或者从下方按钮选择 输入文件 路径");
+    private final JLabel inFileChoosePrompt = new JLabel("输入文件 路径, 支持输入, 拖拽或从右按钮选择");
 
-    private final JTextField inFilePathField = new JTextField();
+    private final JTextField inFilePathField = new JTextField(NullSafe.safeObjToString(
+            PropertiesProxy.getProperty(PropertiesBundle.LAST_IN_FILE.getLiteral())));
 
     private final JButton openChooseInFileButton = new JButton("选择输入");
 
@@ -49,9 +52,10 @@ public class ControlPanel extends JPanel {
 
     private final JPanel outPathFieldPanel = new JPanel();
 
-    private final JLabel outFileChoosePrompt = new JLabel("请输入或者从下方按钮选择 输出文件 路径:");
+    private final JLabel outFileChoosePrompt = new JLabel("输出文件 路径, 可以为空:");
 
-    private final JTextField outFilePathField = new JTextField();
+    private final JTextField outFilePathField = new JTextField(NullSafe.safeObjToString(
+            PropertiesProxy.getProperty(PropertiesBundle.LAST_OUT_FILE.getLiteral())));
 
     private final JButton openChooseOutFileButton = new JButton("选择输出");
 
@@ -59,7 +63,7 @@ public class ControlPanel extends JPanel {
             requireFile(PropertiesBundle.LAST_OUT_FILE)
     );
 
-    private final JButton runButton = new JButton("go!");
+    private final JButton goRunButton = new JButton("go!");
 
     public ControlPanel() {
         init();
@@ -70,6 +74,7 @@ public class ControlPanel extends JPanel {
         initToolBar();
         initAddFilterButtonGroup();
         initFileChooseGroup();
+        new DragDropTargetListener(this);
     }
 
     private void initAddFilterButtonGroup() {
@@ -80,12 +85,13 @@ public class ControlPanel extends JPanel {
         conditionInputPanel.add(addConditionButton);
     }
 
+
     private void initFileChooseGroup() {
         this.add(inFileChoosePrompt);
         this.add(inPathFieldPanel);
         this.add(outFileChoosePrompt);
         this.add(outPathFieldPanel);
-        this.add(runButton);
+        this.add(goRunButton);
 
         inFilePathField.setPreferredSize(uniteTextFieldDimension);
         inPathFieldPanel.add(inFilePathField);
@@ -94,7 +100,6 @@ public class ControlPanel extends JPanel {
         outFilePathField.setPreferredSize(uniteTextFieldDimension);
         outPathFieldPanel.add(outFilePathField);
         outPathFieldPanel.add(openChooseOutFileButton);
-
     }
 
     private void initToolBar() {
@@ -117,6 +122,11 @@ public class ControlPanel extends JPanel {
 
     public String condition() {
         return String.valueOf(conditionField.getText()).trim();
+    }
+
+    @Override
+    public void onDrag() {
+
     }
 
     public void chooseAndSave(ChooseFileType chooseFileType) {
@@ -159,8 +169,8 @@ public class ControlPanel extends JPanel {
         return null;
     }
 
-    public JButton getRunButton() {
-        return runButton;
+    public JButton getGoRunButton() {
+        return goRunButton;
     }
 
     public JButton getAddConditionButton() {
@@ -173,6 +183,10 @@ public class ControlPanel extends JPanel {
 
     public JButton getOpenChooseOutFileButton() {
         return openChooseOutFileButton;
+    }
+
+    public JTextField getConditionField() {
+        return conditionField;
     }
 
     public JTextField getInFilePathField() {
