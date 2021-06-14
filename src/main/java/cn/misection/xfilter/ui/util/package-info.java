@@ -6,12 +6,3 @@
  * @CreateTime 2021年06月13日 13:23:00
  */
 package cn.misection.xfilter.ui.util;
-
-enum SkinStatus {
-    /**
-     * 皮肤状态;
-     */
-    INTELLIJ,
-
-    DARCULA,
-}

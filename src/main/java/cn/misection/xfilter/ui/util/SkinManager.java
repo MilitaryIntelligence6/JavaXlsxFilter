@@ -3,6 +3,7 @@ package cn.misection.xfilter.ui.util;
 import cn.misection.xfilter.ui.config.PropertiesBundle;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.*;
 
@@ -15,8 +16,6 @@ import javax.swing.*;
  */
 public class SkinManager {
 
-    private static SkinStatus status = SkinStatus.INTELLIJ;
-
     private static final boolean beenDark = Boolean.parseBoolean(
             String.valueOf(
                     PropertiesProxy.getProperty(
@@ -28,9 +27,9 @@ public class SkinManager {
 
     public static void chooseSetSkinMod() {
         if (beenDark) {
-            setDarculaSkin();
+            setDarkSkin();
         } else {
-            setIntellijSkin();
+            setLightSkin();
         }
     }
 
@@ -40,19 +39,17 @@ public class SkinManager {
                 String.valueOf(!beenDark));
     }
 
-    public static void setDarculaSkin() {
+    public static void setDarkSkin() {
         try {
             UIManager.setLookAndFeel(new FlatDarculaLaf());
-            status = SkinStatus.DARCULA;
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
     }
 
-    public static void setIntellijSkin() {
+    public static void setLightSkin() {
         try {
             UIManager.setLookAndFeel(new FlatIntelliJLaf());
-            status = SkinStatus.INTELLIJ;
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
