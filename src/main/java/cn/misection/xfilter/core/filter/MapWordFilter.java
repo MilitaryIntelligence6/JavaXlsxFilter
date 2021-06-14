@@ -22,28 +22,36 @@ public class MapWordFilter implements Filterable {
 
     private final int preLineStartIndex;
 
+    private final int safeSize;
+
     public MapWordFilter(List<List<String>> dataLineListRef,
                          List<String> filterWordList,
-                         int preLineStartIndex) {
+                         int preLineStartIndex,
+                         int safeSize) {
         this.dataLineListRef = dataLineListRef;
         this.filterWordList = filterWordList;
         this.preLineStartIndex = preLineStartIndex;
+        this.safeSize = safeSize;
     }
 
     public static MapWordFilter requireDefaultStart(
             List<List<String>> dataLineListRef,
-            List<String> filterWordList) {
-        return new MapWordFilter(dataLineListRef, filterWordList, 2);
+            List<String> filterWordList,
+            int safeSize) {
+        return new MapWordFilter(dataLineListRef, filterWordList, 2, safeSize);
     }
 
     @Override
-    public void filter() {
+    public void filter() throws NumberFormatException {
         for (List<String> line : dataLineListRef) {
             sumPreLine(line);
         }
     }
 
-    private void sumPreLine(List<String> line) {
+    private void sumPreLine(List<String> line) throws NumberFormatException {
+        if (line != null && line.size() < safeSize) {
+            return;
+        }
         Map<String, Double> filterWordMap = new HashMap<String, Double>(filterWordList.size()) {{
             put(CoreString.TOTAL_SUM_KEY.value(), Double.valueOf(0));
         }};
@@ -52,17 +60,17 @@ public class MapWordFilter implements Filterable {
         }
         Double totalSum = Double.valueOf(0);
         for (int i = preLineStartIndex; i < line.size(); i++) {
-            double value = Double.parseDouble(line.get(i + 1));
+            if (line.size() == 3) {
+                System.out.println("debug");
+            }
+            double value = Double.parseDouble(NullSafe.safeDoubleString(line.get(i + 1)));
             filterWordMap.put(CoreString.TOTAL_SUM_KEY.value(),
                     filterWordMap.get(CoreString.TOTAL_SUM_KEY.value()) + value);
             String curColumnName = line.get(i);
             curColumnName = NullSafe.safeString(curColumnName).trim();
-            if (filterWordMap.containsKey(curColumnName)
-                    // 防止越界;
-                    && i != line.size() - 1) {
-                filterWordMap.put(curColumnName,
-                        filterWordMap.get(curColumnName)
-                                + Double.parseDouble(line.get(i + 1)));
+            // 防止越界;
+            if (filterWordMap.containsKey(curColumnName) && i != line.size() - 1) {
+                filterWordMap.put(curColumnName, filterWordMap.get(curColumnName) + value);
             }
             // 这一行一定数字, 跳过;
             ++i;

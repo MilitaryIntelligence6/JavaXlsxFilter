@@ -28,4 +28,11 @@ public class NullSafe {
                 ? StringPool.EMPTY.value()
                 : String.valueOf(obj).trim();
     }
+
+    public static String safeDoubleString(String string) {
+        if (string == null || string.isEmpty()) {
+            return "0";
+        }
+        return string;
+    }
 }

@@ -147,14 +147,13 @@ public class ConditionController {
                         int newPath = JOptionPane.showConfirmDialog(
                                 null,
                                 String.format("输出文件路径为空, 将使用%s作为输出路径, 我懒得再做判断了, 所以后缀比较长, 可以自行删除", outPath),
-                                "ERROR",
+                                "WARNING",
                                 JOptionPane.YES_NO_OPTION
                         );
                         switch (newPath) {
                             case JOptionPane.YES_OPTION:
                                 break;
                             case JOptionPane.NO_OPTION:
-                                return;
                             default:
                                 return;
                         }
@@ -249,7 +248,9 @@ public class ConditionController {
                             .putOutPath(outPath)
                             .putConditionList(service.value())
                             .build();
-                    apiProxy.callFilter();
+                    if (!apiProxy.callFilter()) {
+                        return;
+                    }
                     int choice = JOptionPane.showConfirmDialog(
                             null,
                             String.format("不出意外的话, 已经成功输出到%s\n 你是否要打开所在目录?", outPath),

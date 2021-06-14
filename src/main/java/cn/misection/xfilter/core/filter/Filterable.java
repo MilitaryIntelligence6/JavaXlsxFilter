@@ -8,8 +8,10 @@ package cn.misection.xfilter.core.filter;
  * @CreateTime 2021年06月11日 16:57:00
  */
 public interface Filterable {
+
     /**
      * 筛选;
+     * @throws NumberFormatException
      */
-    void filter();
+    void filter() throws NumberFormatException;
 }

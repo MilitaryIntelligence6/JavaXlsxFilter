@@ -6,6 +6,8 @@ import cn.misection.xfilter.core.proxy.XlsxFetchProxy;
 import cn.misection.xfilter.core.proxy.XlsxProxyable;
 import cn.misection.xfilter.ui.entity.ConditionEntity;
 
+import javax.swing.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +32,20 @@ public class CoreApiProxy {
         this.conditionList = builder.conditionList;
     }
 
-    public void callFilter() {
-        XlsxProxyable fetchProxy = XlsxFetchProxy.requireDefaultFullSkip(inPath);
+    public boolean callFilter() {
+        XlsxProxyable fetchProxy = null;
+        try {
+            fetchProxy = XlsxFetchProxy.requireDefaultFullSkip(inPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "读取xlsx文件失败, 请检查文件格式或者联系开发者debug",
+                    "ERROR",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return false;
+        }
         List<String> filterWordList = new ArrayList<String>() {{
             for (ConditionEntity condition : conditionList) {
                 add(condition.value());
@@ -39,10 +53,34 @@ public class CoreApiProxy {
         }};
         Filterable filter = MapWordFilter.requireDefaultStart(
                 fetchProxy.data(),
-                filterWordList
+                filterWordList,
+                fetchProxy.safeSize()
         );
-        filter.filter();
-        fetchProxy.output(outPath);
+        try {
+            filter.filter();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    String.format("读取xlsx中数字失败, 问题出现在\n%s\n请检查文件格式或者联系开发者debug", e.getMessage()),
+                    "ERROR",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return false;
+        }
+        try {
+            fetchProxy.output(outPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "文件输出失败, 请检查是否开启文件, 并联系开发者debug",
+                    "ERROR",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return false;
+        }
+        return true;
     }
 
     public static class Builder {
