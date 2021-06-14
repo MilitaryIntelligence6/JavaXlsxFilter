@@ -163,6 +163,9 @@ public class DragDropTargetListener implements DropTargetListener {
 }
 
 class DnDUtils {
+
+    private static boolean debugEnabled = (System.getProperty("DnDExamples.debug") != null);
+
     public static String showActions(int action) {
         String actions = StringPool.EMPTY.value();
         if ((action & (DnDConstants.ACTION_LINK | DnDConstants.ACTION_COPY_OR_MOVE)) == 0) {
@@ -189,7 +192,4 @@ class DnDUtils {
             System.err.println(s);
         }
     }
-
-    private static boolean debugEnabled = (System
-            .getProperty("DnDExamples.debug") != null);
 }
