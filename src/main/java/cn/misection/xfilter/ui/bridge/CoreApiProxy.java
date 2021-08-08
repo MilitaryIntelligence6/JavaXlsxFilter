@@ -5,6 +5,7 @@ import cn.misection.xfilter.core.filter.MapWordFilter;
 import cn.misection.xfilter.core.proxy.XlsxFetchProxy;
 import cn.misection.xfilter.core.proxy.XlsxProxyable;
 import cn.misection.xfilter.ui.entity.ConditionEntity;
+import cn.misection.xfilter.ui.util.DialogPopper;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -20,11 +21,11 @@ import java.util.List;
  */
 public class CoreApiProxy {
 
-    private String inPath;
+    private final String inPath;
 
-    private String outPath;
+    private final String outPath;
 
-    private List<ConditionEntity> conditionList;
+    private final List<ConditionEntity> conditionList;
 
     private CoreApiProxy(Builder builder) {
         this.inPath = builder.inPath;
@@ -38,12 +39,7 @@ public class CoreApiProxy {
             fetchProxy = XlsxFetchProxy.requireDefaultFullSkip(inPath);
         } catch (IOException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(
-                    null,
-                    "读取xlsx文件失败, 请检查文件格式或者联系开发者debug",
-                    "ERROR",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            DialogPopper.error("读取xlsx文件失败, 请检查文件格式或者联系开发者debug");
             return false;
         }
         List<String> filterWordList = new ArrayList<String>() {{
@@ -56,29 +52,24 @@ public class CoreApiProxy {
                 filterWordList,
                 fetchProxy.safeSize()
         );
+        // 处理数据捕获;
         try {
             filter.filter();
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(
-                    null,
-                    String.format("读取xlsx中数字失败, 问题出现在\n%s\n请检查文件格式或者联系开发者debug", e.getMessage()),
-                    "ERROR",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            DialogPopper.error(String.format("读取xlsx中数字失败, 问题出现在\n%s\n请检查文件格式或者联系开发者debug", e.getMessage()));
             return false;
         }
+        // 输出捕获;
         try {
             fetchProxy.output(outPath);
         } catch (IOException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(
-                    null,
-                    "文件输出失败, 请检查是否开启文件, 并联系开发者debug",
-                    "ERROR",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            DialogPopper.error("文件输出失败, 请检查是否开启文件, 并联系开发者debug");
             return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            DialogPopper.unknownError();
         }
         return true;
     }

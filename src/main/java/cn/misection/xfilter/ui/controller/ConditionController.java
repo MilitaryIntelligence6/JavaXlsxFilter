@@ -8,6 +8,7 @@ import cn.misection.xfilter.ui.constant.ChooseFileType;
 import cn.misection.xfilter.ui.entity.ConditionEntity;
 import cn.misection.xfilter.ui.service.ConditionService;
 import cn.misection.xfilter.ui.service.impl.ConditionServiceImpl;
+import cn.misection.xfilter.ui.util.DialogPopper;
 import cn.misection.xfilter.ui.util.PropertiesProxy;
 import cn.misection.xfilter.ui.view.ConditionViewPanel;
 import cn.misection.xfilter.ui.view.ControlPanel;
@@ -103,7 +104,7 @@ public class ConditionController {
                     int selectedRow = conditionViewPanel.getDataTable().getSelectedRow();
                     if (selectedRow != -1) {
                         conditionViewPanel.delSelected(selectedRow);
-                        service.remove(selectedRow);
+                        service.remove(selectedRow);     
                     }
                 }
         );
@@ -134,22 +135,13 @@ public class ConditionController {
                     }
                     if (!(inPath.endsWith(StringPool.SUFFIX_XLSX.value())
                             || inPath.endsWith(StringPool.SUFFIX_XLS.value()))) {
-                        JOptionPane.showMessageDialog(
-                                null,
-                                "输入文件必须以.xlsx或者.xls结尾(虽然实际上没啥用)",
-                                "ERROR",
-                                JOptionPane.ERROR_MESSAGE
-                        );
+                        DialogPopper.error("输入文件必须以.xlsx或者.xls结尾(虽然实际上没啥用)");
                         return;
                     }
                     if (outPath.isEmpty()) {
                         outPath = String.format("%s.out.xlsx", inPath);
-                        int newPath = JOptionPane.showConfirmDialog(
-                                null,
-                                String.format("输出文件路径为空, 将使用%s作为输出路径, 我懒得再做判断了, 所以后缀比较长, 可以自行删除", outPath),
-                                "WARNING",
-                                JOptionPane.YES_NO_OPTION
-                        );
+                        int newPath = DialogPopper.confirm(String.format("输出文件路径为空, 将使用%s作为输出路径, " +
+                                "我懒得再做判断了, 所以后缀比较长, 可以自行改名", outPath));
                         switch (newPath) {
                             case JOptionPane.YES_OPTION:
                                 break;
@@ -168,35 +160,19 @@ public class ConditionController {
                     File inFile = new File(inPath);
                     File outFile = new File(outPath);
                     if (!inFile.exists()) {
-                        JOptionPane.showMessageDialog(
-                                null,
-                                "输入文件不存在, 请检查路径!",
-                                "ERROR",
-                                JOptionPane.ERROR_MESSAGE
-                        );
+                        DialogPopper.error("输入文件不存在, 请检查路径!");
                         return;
                     }
                     if (inFile.isDirectory()) {
-                        JOptionPane.showMessageDialog(
-                                null,
-                                "输入文件是一个目录, 请检查路径重新输入!",
-                                "ERROR",
-                                JOptionPane.ERROR_MESSAGE
-                        );
+                        DialogPopper.error("输入文件是一个目录, 请检查路径重新输入!");
                         return;
                     }
                     if (outFile.exists() && outFile.isFile()) {
-                        int override = JOptionPane.showConfirmDialog(
-                                null,
-                                "输出文件已存在, 确认覆盖?",
-                                "WARNING",
-                                JOptionPane.YES_NO_OPTION
-                        );
+                        int override = DialogPopper.confirm("输出文件已存在, 确认覆盖?");
                         switch (override) {
                             case JOptionPane.YES_OPTION:
                                 break;
                             case JOptionPane.NO_OPTION:
-                                return;
                             default:
                                 return;
                         }
@@ -204,17 +180,12 @@ public class ConditionController {
                     if (outFile.exists() && outFile.isDirectory()) {
                         outFile = new File(String.format("%s\\%s.out.xlsx", outFile, inFile.getName()));
                         outPath = outFile.getAbsolutePath();
-                        int newPath = JOptionPane.showConfirmDialog(
-                                null,
-                                String.format("你选择的输出文件的是一个目录, 那么我输出到 %s 哦?", outFile.getAbsolutePath()),
-                                "WARNING",
-                                JOptionPane.YES_NO_OPTION
-                        );
+                        int newPath = DialogPopper.confirm(String.format("你选择的输出文件的是一个目录, 那么我就输出到 %s 了哦?",
+                                outFile.getAbsolutePath()));
                         switch (newPath) {
                             case JOptionPane.YES_OPTION:
                                 break;
                             case JOptionPane.NO_OPTION:
-                                return;
                             default:
                                 return;
                         }
@@ -222,23 +193,13 @@ public class ConditionController {
                     if (!outFile.exists()) {
                         // 只创建父目录, 其他管不了;
                         if (outFile.getParent() == null) {
-                            JOptionPane.showMessageDialog(
-                                    null,
-                                    "错误的输出路径, 目录不存在且没有父目录!",
-                                    "ERROR",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
+                            DialogPopper.error("错误的输出路径, 目录不存在且没有父目录!");
                             return;
                         }
                         File parentDir = new File(outFile.getParent());
                         if (!parentDir.exists()) {
                             if (!parentDir.mkdirs()) {
-                                JOptionPane.showMessageDialog(
-                                        null,
-                                        "创建目录失败, 请选择正确的路径!",
-                                        "ERROR",
-                                        JOptionPane.ERROR_MESSAGE
-                                );
+                                DialogPopper.error("创建目录失败, 请检查是否在其他应用中打开或者选择其他路径!");
                                 return;
                             }
                         }
@@ -251,12 +212,8 @@ public class ConditionController {
                     if (!apiProxy.callFilter()) {
                         return;
                     }
-                    int choice = JOptionPane.showConfirmDialog(
-                            null,
-                            String.format("不出意外的话, 已经成功输出到%s\n 你是否要打开所在目录?", outPath),
-                            "恭喜你输出成功!",
-                            JOptionPane.YES_NO_OPTION
-                    );
+                    int choice = DialogPopper.confirm("恭喜你输出成功!",
+                            String.format("不出意外的话, 已经成功输出到%s\n 你是否要打开所在目录?", outPath));
                     switch (choice) {
                         case JOptionPane.YES_OPTION:
                             try {

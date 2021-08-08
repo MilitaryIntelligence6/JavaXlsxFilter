@@ -20,6 +20,11 @@ public class MapWordFilter implements Filterable {
 
     private final List<String> filterWordList;
 
+    /**
+     * TODO 是否模糊匹配;
+     */
+    private boolean fuzzyMatch;
+
     private final int preLineStartIndex;
 
     private final int safeSize;
